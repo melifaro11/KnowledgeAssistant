@@ -1,8 +1,7 @@
 from pydantic import BaseModel
+from datetime import datetime
 from typing import Optional
 from enum import Enum
-import uuid
-from datetime import datetime
 
 
 class SourceType(str, Enum):
@@ -11,20 +10,19 @@ class SourceType(str, Enum):
     url = "url"
 
 
-class SourceBase(BaseModel):
+class SourceCreate(BaseModel):
     name: str
     type: SourceType
     location: Optional[str] = None
 
 
-class SourceCreate(SourceBase):
-    pass
-
-
-class SourceRead(SourceBase):
-    id: uuid.UUID
-    added_at: datetime
-    isIndexed: bool
+class SourceResponse(BaseModel):
+    id: str
+    name: str
+    type: SourceType
+    addedAt: datetime
+    location: Optional[str] = None
+    isIndexed: bool = False
 
     class Config:
         orm_mode = True

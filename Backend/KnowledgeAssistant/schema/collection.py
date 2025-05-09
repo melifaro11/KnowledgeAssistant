@@ -1,23 +1,18 @@
 from pydantic import BaseModel
-from typing import List
-import uuid
 from datetime import datetime
+from typing import List
+from app.schemas.source import SourceResponse
 
-from schema.source import SourceRead
 
-
-class CollectionBase(BaseModel):
+class CollectionCreate(BaseModel):
     name: str
 
 
-class CollectionCreate(CollectionBase):
-    pass
-
-
-class CollectionRead(CollectionBase):
-    id: uuid.UUID
+class CollectionResponse(BaseModel):
+    id: str
+    name: str
     createdAt: datetime
-    sources: List[SourceRead] = []
+    sources: List[SourceResponse] = []
 
     class Config:
         orm_mode = True

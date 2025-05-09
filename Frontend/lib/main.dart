@@ -19,8 +19,8 @@ void main() {
 }
 
 class KnowledgeAssistantApp extends StatelessWidget {
-  final AuthRepository authRepository = AuthRepository(apiBaseUrl: baseUri);
-  final ChatRepository chatRepository = ChatRepository(apiUrl: baseUri);
+  final AuthRepository authRepository = AuthRepository(baseUrl: baseUri);
+  final ChatRepository chatRepository = ChatRepository(baseUrl: baseUri);
   final CollectionsRepository collectionsRepository = CollectionsRepository(baseUrl: baseUri);
   final SettingsRepository settingsRepository = SettingsRepository();
 

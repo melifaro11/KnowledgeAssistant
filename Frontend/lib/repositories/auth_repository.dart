@@ -3,16 +3,16 @@ import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
 class AuthRepository {
-  final String apiBaseUrl;
+  final String baseUrl;
 
-  AuthRepository({required this.apiBaseUrl});
+  AuthRepository({required this.baseUrl});
 
   Future<User> login({
     required String email,
     required String password,
   }) async {
     final response = await http.post(
-      Uri.parse('$apiBaseUrl/auth/login'),
+      Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
@@ -31,7 +31,7 @@ class AuthRepository {
     String? name,
   }) async {
     final response = await http.post(
-      Uri.parse('$apiBaseUrl/auth/register'),
+      Uri.parse('$baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email,
@@ -50,7 +50,7 @@ class AuthRepository {
 
   Future<void> logout(String token) async {
     final response = await http.post(
-      Uri.parse('$apiBaseUrl/auth/logout'),
+      Uri.parse('$baseUrl/auth/logout'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

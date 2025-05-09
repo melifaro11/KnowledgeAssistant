@@ -1,14 +1,16 @@
-from sqlalchemy import Column, String
-from sqlalchemy.dialects.postgresql import UUID
 import uuid
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 
-from models.base_class import Base
+from KnowledgeAssistant.models.db import Base
 
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=True)
     password_hash = Column(String, nullable=False)
+
+    collections = relationship("Collection", back_populates="owner")
