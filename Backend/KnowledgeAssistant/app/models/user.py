@@ -1,7 +1,9 @@
 import uuid
+
+from app.db.db_base import Base
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from app.db.db_base import Base
 
 
 class User(Base):

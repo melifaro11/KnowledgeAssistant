@@ -27,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is Authenticated) {
-                  // Переход на главную страницу после успешного входа
                   Navigator.of(context).pushReplacementNamed('/dashboard');
                 } else if (state is AuthError) {
                   ScaffoldMessenger.of(

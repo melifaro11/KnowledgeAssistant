@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import '../models/chat_message.dart';
 
 class ChatRepository {
-  final String apiUrl;
+  final String baseUrl;
 
-  ChatRepository({required this.apiUrl});
+  ChatRepository({required this.baseUrl});
 
   /// Отправка вопроса в коллекцию и получение ответа
   Future<ChatMessage> askQuestion({
@@ -13,7 +13,7 @@ class ChatRepository {
     required String question,
   }) async {
     final response = await http.post(
-      Uri.parse('$apiUrl/collections/$collectionId/chat'),
+      Uri.parse('$baseUrl/collections/$collectionId/chat'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'question': question}),
     );
@@ -30,7 +30,7 @@ class ChatRepository {
   /// Получение истории сообщений по коллекции
   Future<List<ChatMessage>> getChatHistory(String collectionId) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/collections/$collectionId/chat/history'),
+      Uri.parse('$baseUrl/collections/$collectionId/chat/history'),
     );
 
     if (response.statusCode == 200) {
