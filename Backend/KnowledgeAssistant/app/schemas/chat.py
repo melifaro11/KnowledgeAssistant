@@ -1,7 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Optional
-import uuid
 from datetime import datetime
+from typing import List, Optional
 
 
 class ChatSource(BaseModel):
@@ -10,19 +9,16 @@ class ChatSource(BaseModel):
     page: Optional[str] = None
 
 
-class ChatMessageBase(BaseModel):
-    question: str
-    answer: str
-
-
 class ChatMessageCreate(BaseModel):
     question: str
 
 
-class ChatMessageRead(ChatMessageBase):
-    id: uuid.UUID
-    sources: List[ChatSource] = []
+class ChatMessageResponse(BaseModel):
+    id: str
+    question: str
+    answer: str
+    sources: List[ChatSource]
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

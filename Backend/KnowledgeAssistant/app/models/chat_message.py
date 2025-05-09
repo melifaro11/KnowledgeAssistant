@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime
 
-from models.base_class import Base
+from app.models.base_class import Base
 
 
 class ChatMessage(Base):

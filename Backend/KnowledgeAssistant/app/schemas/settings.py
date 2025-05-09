@@ -12,6 +12,11 @@ class ModelType(str, Enum):
     localLLM = "localLLM"
 
 
-class Settings(BaseModel):
+class SettingsResponse(BaseModel):
+    storageType: StorageType
+    modelType: ModelType
+
+
+class SettingsUpdate(BaseModel):
     storageType: StorageType
     modelType: ModelType
