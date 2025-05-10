@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:knowledge_assistant/bloc/collections_bloc.dart';
-import 'package:knowledge_assistant/bloc/events/collections_event.dart';
-import 'package:knowledge_assistant/bloc/states/collections_state.dart';
+import 'package:knowledge_assistant/bloc/collection_detail_bloc.dart';
+import 'package:knowledge_assistant/bloc/events/collection_detail_event.dart';
+import 'package:knowledge_assistant/bloc/states/collection_detail_state.dart';
 import 'package:knowledge_assistant/repositories/collections_repository.dart';
 
 class CollectionPage extends StatefulWidget {
@@ -21,8 +21,8 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CollectionsBloc>().add(
-      LoadCollectionById(widget.collectionId),
+    context.read<CollectionDetailBloc>().add(
+      LoadCollectionDetail(widget.collectionId),
     );
   }
 
@@ -62,22 +62,14 @@ class _CollectionPageState extends State<CollectionPage> {
               TextButton(
                 onPressed: () async {
                   Navigator.pop(context);
-                  try {
-                    context.read<CollectionsBloc>().add(
-                      AddSourceToCollection(
-                        collectionId: widget.collectionId,
-                        name: nameController.text,
-                        type: type,
-                        location: locationController.text,
-                      ),
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Ошибка добавления источника: $e'),
-                      ),
-                    );
-                  }
+                  context.read<CollectionDetailBloc>().add(
+                    AddSourceToCollection(
+                      collectionId: widget.collectionId,
+                      name: nameController.text,
+                      type: type,
+                      location: locationController.text,
+                    ),
+                  );
                 },
                 child: const Text('Add'),
               ),
@@ -94,14 +86,12 @@ class _CollectionPageState extends State<CollectionPage> {
         onPressed: _addSourceDialog,
         child: const Icon(Icons.add),
       ),
-      body: BlocBuilder<CollectionsBloc, CollectionsState>(
+      body: BlocBuilder<CollectionDetailBloc, CollectionDetailState>(
         builder: (context, state) {
-          if (state is CollectionsLoading) {
+          if (state is CollectionDetailLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is CollectionsLoaded) {
-            final collection = state.collections.firstWhere(
-              (c) => c.id == widget.collectionId,
-            );
+          } else if (state is CollectionDetailLoaded) {
+            final collection = state.collection;
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [
@@ -111,10 +101,11 @@ class _CollectionPageState extends State<CollectionPage> {
                 ),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.search),
-                  label: const Text('Поиск по коллекции'),
-                  onPressed: () {
-                    GoRouter.of(context).push('/chat/${widget.collectionId}');
-                  },
+                  label: const Text('Search in collection'),
+                  onPressed:
+                      () => GoRouter.of(
+                        context,
+                      ).push('/chat/${widget.collectionId}'),
                 ),
                 const SizedBox(height: 16),
                 ...collection.sources.map(
@@ -125,10 +116,7 @@ class _CollectionPageState extends State<CollectionPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (s.lastError != null)
-                          Tooltip(
-                            message: s.lastError!,
-                            child: const Icon(Icons.error, color: Colors.red),
-                          )
+                          const Icon(Icons.error, color: Colors.red)
                         else if (s.isIndexed)
                           const Icon(Icons.check_circle, color: Colors.green)
                         else
@@ -147,12 +135,11 @@ class _CollectionPageState extends State<CollectionPage> {
                                 setState(() {
                                   _indexingSources.add(s.id);
                                 });
-
                                 try {
                                   final updatedSource = await context
                                       .read<CollectionsRepository>()
                                       .reindexSource(widget.collectionId, s.id);
-                                  context.read<CollectionsBloc>().add(
+                                  context.read<CollectionDetailBloc>().add(
                                     UpdateSourceInCollection(
                                       widget.collectionId,
                                       updatedSource,
@@ -161,7 +148,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Ошибка индексации: $e'),
+                                      content: Text('Indexing error: $e'),
                                     ),
                                   );
                                 } finally {
@@ -182,7 +169,7 @@ class _CollectionPageState extends State<CollectionPage> {
                                   (_) => AlertDialog(
                                     title: const Text('Delete source?'),
                                     content: const Text(
-                                      'Вы уверены, что хотите удалить этот источник?',
+                                      'Are you sure you want to delete this source?',
                                     ),
                                     actions: [
                                       TextButton(
@@ -198,9 +185,8 @@ class _CollectionPageState extends State<CollectionPage> {
                                     ],
                                   ),
                             );
-
                             if (confirmed == true) {
-                              context.read<CollectionsBloc>().add(
+                              context.read<CollectionDetailBloc>().add(
                                 DeleteSourceFromCollection(
                                   widget.collectionId,
                                   s.id,
@@ -215,7 +201,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 ),
               ],
             );
-          } else if (state is CollectionsError) {
+          } else if (state is CollectionDetailError) {
             return Center(child: Text(state.message));
           } else {
             return const SizedBox.shrink();

@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/auth_bloc.dart';
+import 'package:knowledge_assistant/bloc/collection_detail_bloc.dart';
 import 'package:knowledge_assistant/bloc/states/auth_state.dart';
+import 'package:knowledge_assistant/repositories/collections_repository.dart';
 import 'package:knowledge_assistant/ui/pages/chat_page.dart';
 import 'package:knowledge_assistant/ui/pages/collection_page.dart';
 import 'package:knowledge_assistant/ui/pages/dashboard_page.dart';
@@ -35,7 +37,13 @@ class AppRouter {
         path: '/collection/:id',
         builder: (context, state) {
           final collectionId = state.pathParameters['id']!;
-          return CollectionPage(collectionId: collectionId);
+          return BlocProvider(
+            create:
+                (_) => CollectionDetailBloc(
+                  repository: context.read<CollectionsRepository>(),
+                ),
+            child: CollectionPage(collectionId: collectionId),
+          );
         },
       ),
       GoRoute(

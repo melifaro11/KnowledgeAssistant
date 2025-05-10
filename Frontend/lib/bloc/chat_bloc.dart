@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/chat_event.dart';
 import 'package:knowledge_assistant/bloc/states/chat_state.dart';
-import '../repositories/chat_repository.dart';
+
 import '../models/chat_message.dart';
+import '../repositories/chat_repository.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatRepository repository;
@@ -13,20 +14,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onLoadChatHistory(
-      LoadChatHistory event, Emitter<ChatState> emit) async {
+    LoadChatHistory event,
+    Emitter<ChatState> emit,
+  ) async {
     emit(ChatLoading());
     try {
       final history = await repository.getChatHistory(event.collectionId);
       emit(ChatLoaded(history));
     } catch (e) {
-      emit(ChatError('Ошибка загрузки истории: ${e.toString()}'));
+      emit(ChatError('History loading error: ${e.toString()}'));
     }
   }
 
   Future<void> _onSendMessage(
-      SendMessage event, Emitter<ChatState> emit) async {
+    SendMessage event,
+    Emitter<ChatState> emit,
+  ) async {
     final previousMessages =
-    state is ChatLoaded ? (state as ChatLoaded).messages : [];
+        state is ChatLoaded ? (state as ChatLoaded).messages : [];
     emit(ChatLoading());
 
     try {
@@ -38,7 +43,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ..add(newMessage);
       emit(ChatLoaded(updatedMessages));
     } catch (e) {
-      emit(ChatError('Ошибка отправки вопроса: ${e.toString()}'));
+      emit(ChatError('Error sending request: ${e.toString()}'));
     }
   }
 }

@@ -13,6 +13,7 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My collections'),
+        elevation: 10,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -30,54 +31,58 @@ class DashboardPage extends StatelessWidget {
             if (state.collections.isEmpty) {
               return const Center(child: Text('No collections'));
             }
-            return ListView.builder(
-              itemCount: state.collections.length,
-              itemBuilder: (context, index) {
-                final collection = state.collections[index];
-                return ListTile(
-                  title: Text(collection.name),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text('Удалить коллекцию?'),
-                              content: Text(
-                                'Вы уверены, что хотите удалить "${collection.name}"?',
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              child: ListView.builder(
+                itemCount: state.collections.length,
+                itemBuilder: (context, index) {
+                  final collection = state.collections[index];
+                  return ListTile(
+                    title: Text(collection.name),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (_) => AlertDialog(
+                                title: const Text('Delete collection?'),
+                                content: Text(
+                                  'Are you sure you want to delete the collection "${collection.name}"?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    child: const Text('Delete'),
+                                  ),
+                                ],
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed:
-                                      () => Navigator.pop(context, false),
-                                  child: const Text('Отмена'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('Удалить'),
-                                ),
-                              ],
-                            ),
-                      );
-
-                      if (confirmed == true) {
-                        context.read<CollectionsBloc>().add(
-                          DeleteCollection(collection.id),
                         );
-                      }
+
+                        if (confirmed == true) {
+                          context.read<CollectionsBloc>().add(
+                            DeleteCollection(collection.id),
+                          );
+                        }
+                      },
+                    ),
+                    onTap: () {
+                      context.push('/collection/${collection.id}');
                     },
-                  ),
-                  onTap: () {
-                    context.push('/collection/${collection.id}');
-                  },
-                );
-              },
+                  );
+                },
+              ),
             );
           } else if (state is CollectionsError) {
             return Center(child: Text(state.message));
           } else {
-            return const Center(child: Text('Загрузите коллекции'));
+            return const Center(child: Text('Collections not loaded'));
           }
         },
       ),
