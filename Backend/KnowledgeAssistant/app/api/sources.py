@@ -71,11 +71,7 @@ def index_source(
     if not source or source.collection_id != collection_id:
         raise HTTPException(status_code=404, detail="Source not found")
 
-    source = source_service.reindex_source(db, source, collection_id)
-
-    print(f'IS_INDEXED: {source.is_indexed}')
-
-    return source
+    return source_service.reindex_source(db, source, collection_id)
 
 
 @router.delete("/{source_id}", status_code=status.HTTP_204_NO_CONTENT)

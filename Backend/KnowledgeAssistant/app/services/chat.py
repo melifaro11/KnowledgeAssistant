@@ -26,3 +26,42 @@ def create_chat_message(db: Session, collection_id: str, question: str, answer: 
     db.commit()
     db.refresh(chat)
     return chat
+
+
+def delete_chat_message(db: Session, collection_id: str, message_id: str):
+    message = db.query(ChatMessage).filter(
+        ChatMessage.id == message_id,
+        ChatMessage.collection_id == collection_id
+    ).first()
+
+    if message:
+        db.delete(message)
+        db.commit()
+
+    return message
+
+
+def delete_chat_history(db: Session, collection_id: str):
+    db.query(ChatMessage).filter(ChatMessage.collection_id == collection_id).delete()
+    db.commit()
+
+
+def update_chat_message(
+        db: Session,
+        collection_id: str,
+        message_id: str,
+        question: str,
+        answer: str,
+):
+    message = db.query(ChatMessage).filter(
+        ChatMessage.id == message_id,
+        ChatMessage.collection_id == collection_id
+    ).first()
+
+    if message:
+        message.question = question
+        message.answer = answer
+        db.commit()
+        db.refresh(message)
+
+    return message

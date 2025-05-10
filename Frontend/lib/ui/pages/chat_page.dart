@@ -19,15 +19,17 @@ class _ChatPageState extends State<ChatPage> {
   final _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
+  List<dynamic> _messages = [];
+  bool _isSending = false;
+
   Future<void> _scrollToEnd() async {
-    /*
     await Future.delayed(const Duration(milliseconds: 100));
+    if (!_scrollController.hasClients) return;
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
-    */
   }
 
   @override
@@ -43,27 +45,52 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Expanded(
-            child: BlocBuilder<ChatBloc, ChatState>(
-              builder: (context, state) {
-                if (state is ChatLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ChatLoaded) {
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: state.messages.length,
-                    itemBuilder: (context, index) {
-                      final msg = state.messages[index];
-                      return ChatMessageWidget(msg: msg);
-                    },
-                  );
+            child: BlocConsumer<ChatBloc, ChatState>(
+              listener: (context, state) {
+                if (state is ChatLoaded) {
+                  setState(() {
+                    _messages = state.messages;
+                    _isSending = false;
+                  });
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _scrollToEnd();
+                  });
                 } else if (state is ChatError) {
-                  return Center(child: Text(state.message));
-                } else {
-                  return const Center(child: Text('Loading...'));
+                  setState(() {
+                    _isSending = false;
+                  });
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
                 }
+              },
+              builder: (context, state) {
+                if (_messages.isEmpty && state is ChatLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _messages.length + (_isSending ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < _messages.length) {
+                      final msg = _messages[index];
+                      return ChatMessageWidget(
+                        msg: msg,
+                        collectionId: widget.collectionId,
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                  },
+                );
               },
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
             child: TextFieldDecorated(
@@ -74,19 +101,24 @@ class _ChatPageState extends State<ChatPage> {
                 icon: const Icon(Icons.send),
                 onPressed: () {
                   final question = _controller.text.trim();
-                  if (question.isNotEmpty) {
-                    context.read<ChatBloc>().add(
-                      SendMessage(
-                        collectionId: widget.collectionId,
-                        question: question,
-                      ),
-                    );
-                    _controller.clear();
+                  if (question.isEmpty) return;
 
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _scrollToEnd();
-                    });
-                  }
+                  setState(() {
+                    _isSending = true;
+                  });
+
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _scrollToEnd();
+                  });
+
+                  context.read<ChatBloc>().add(
+                    SendMessage(
+                      collectionId: widget.collectionId,
+                      question: question,
+                    ),
+                  );
+
+                  _controller.clear();
                 },
               ),
             ),

@@ -9,6 +9,11 @@ class ChatSource(BaseModel):
     page: Optional[str] = None
 
 
+class ChatMessageUpdate(BaseModel):
+    question: str
+    answer: str
+
+
 class ChatMessageCreate(BaseModel):
     question: str
 

@@ -11,6 +11,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc({required this.repository}) : super(ChatInitial()) {
     on<LoadChatHistory>(_onLoadChatHistory);
     on<SendMessage>(_onSendMessage);
+    on<DeleteMessage>(_onDeleteMessage);
+    on<DeleteHistory>(_onDeleteHistory);
+    on<EditMessage>(_onEditMessage);
   }
 
   Future<void> _onLoadChatHistory(
@@ -44,6 +47,59 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatLoaded(updatedMessages));
     } catch (e) {
       emit(ChatError('Error sending request: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onDeleteMessage(
+    DeleteMessage event,
+    Emitter<ChatState> emit,
+  ) async {
+    if (state is! ChatLoaded) return;
+    final current = (state as ChatLoaded).messages;
+
+    try {
+      await repository.deleteMessage(
+        collectionId: event.collectionId,
+        messageId: event.messageId,
+      );
+      final updated = current.where((m) => m.id != event.messageId).toList();
+      emit(ChatLoaded(updated));
+    } catch (e) {
+      emit(ChatError('Delete message error: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onDeleteHistory(
+    DeleteHistory event,
+    Emitter<ChatState> emit,
+  ) async {
+    try {
+      await repository.deleteHistory(event.collectionId);
+      emit(ChatLoaded([]));
+    } catch (e) {
+      emit(ChatError('Delete history error: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onEditMessage(
+    EditMessage event,
+    Emitter<ChatState> emit,
+  ) async {
+    if (state is! ChatLoaded) return;
+    final current = (state as ChatLoaded).messages;
+
+    try {
+      final updatedMsg = await repository.updateMessage(
+        collectionId: event.collectionId,
+        messageId: event.messageId,
+        question: event.question,
+        answer: event.answer,
+      );
+      final updated =
+          current.map((m) => m.id == updatedMsg.id ? updatedMsg : m).toList();
+      emit(ChatLoaded(updated));
+    } catch (e) {
+      emit(ChatError('Update error: ${e.toString()}'));
     }
   }
 }
