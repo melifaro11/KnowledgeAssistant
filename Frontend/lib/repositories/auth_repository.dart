@@ -7,10 +7,7 @@ class AuthRepository {
 
   AuthRepository({required this.baseUrl});
 
-  Future<User> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<User> login({required String email, required String password}) async {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
@@ -21,7 +18,7 @@ class AuthRepository {
       final data = jsonDecode(response.body);
       return User.fromJson(data);
     } else {
-      throw Exception('Ошибка авторизации: ${response.body}');
+      throw Exception('Authorization error: ${response.body}');
     }
   }
 
@@ -33,18 +30,17 @@ class AuthRepository {
     final response = await http.post(
       Uri.parse('$baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-        'name': name,
-      }),
+      body: jsonEncode({'email': email, 'password': password, 'name': name}),
     );
 
     if (response.statusCode == 201) {
       final data = jsonDecode(response.body);
       return User.fromJson(data);
+    } else if (response.statusCode == 400) {
+      final data = jsonDecode(response.body);
+      throw Exception(data["detail"]);
     } else {
-      throw Exception('Ошибка регистрации: ${response.body}');
+      throw Exception('Registration error: ${response.body}');
     }
   }
 
@@ -58,7 +54,7 @@ class AuthRepository {
     );
 
     if (response.statusCode != 204) {
-      throw Exception('Ошибка выхода: ${response.body}');
+      throw Exception('Logout error: ${response.body}');
     }
   }
 }

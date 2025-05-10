@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:knowledge_assistant/services/auth_token_storage.dart';
 import '../models/chat_message.dart';
 
 class ChatRepository {
   final String baseUrl;
+  final AuthTokenStorage tokenStorage = AuthTokenStorage();
 
   ChatRepository({required this.baseUrl});
 
@@ -12,9 +14,17 @@ class ChatRepository {
     required String collectionId,
     required String question,
   }) async {
+    final token = await tokenStorage.getToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
     final response = await http.post(
       Uri.parse('$baseUrl/collections/$collectionId/chat'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: jsonEncode({'question': question}),
     );
 
@@ -23,14 +33,21 @@ class ChatRepository {
       return ChatMessage.fromJson(data);
     } else {
       throw Exception(
-          'Ошибка запроса: ${response.statusCode} — ${response.body}');
+        'Ошибка запроса: ${response.statusCode} — ${response.body}',
+      );
     }
   }
 
   /// Получение истории сообщений по коллекции
   Future<List<ChatMessage>> getChatHistory(String collectionId) async {
+    final token = await tokenStorage.getToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
     final response = await http.get(
       Uri.parse('$baseUrl/collections/$collectionId/chat/history'),
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
@@ -40,7 +57,8 @@ class ChatRepository {
           .toList();
     } else {
       throw Exception(
-          'Не удалось загрузить историю чата: ${response.statusCode}');
+        'Не удалось загрузить историю чата: ${response.statusCode}',
+      );
     }
   }
 }

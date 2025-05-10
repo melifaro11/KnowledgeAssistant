@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/auth_bloc.dart';
 import 'package:knowledge_assistant/bloc/states/auth_state.dart';
-import 'package:knowledge_assistant/ui/screens/chat_screen.dart';
-import 'package:knowledge_assistant/ui/screens/collection_screen.dart';
-import 'package:knowledge_assistant/ui/screens/dashboard_screen.dart';
-import 'package:knowledge_assistant/ui/screens/login_screen.dart';
-import 'package:knowledge_assistant/ui/screens/settings_screen.dart';
+import 'package:knowledge_assistant/ui/screens/chat_page.dart';
+import 'package:knowledge_assistant/ui/screens/collection_page.dart';
+import 'package:knowledge_assistant/ui/screens/dashboard_page.dart';
+import 'package:knowledge_assistant/ui/screens/login_page.dart';
+import 'package:knowledge_assistant/ui/screens/register_page.dart';
+import 'package:knowledge_assistant/ui/screens/settings_page.dart';
 
 
 class AppRouter {
@@ -18,9 +18,10 @@ class AppRouter {
       final isLoggedIn = authState is Authenticated;
 
       final loggingIn = state.matchedLocation == '/login';
+      final registering = state.matchedLocation == '/register';
 
-      if (!isLoggedIn && !loggingIn) return '/login';
-      if (isLoggedIn && loggingIn) return '/dashboard';
+      if (!isLoggedIn && !loggingIn && !registering) return '/login';
+      if (isLoggedIn && (loggingIn || registering)) return '/dashboard';
 
       return null;
     },
@@ -54,6 +55,10 @@ class AppRouter {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterPage(),
       ),
     ],
   );

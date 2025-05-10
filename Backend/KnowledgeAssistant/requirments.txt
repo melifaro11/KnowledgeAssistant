@@ -8,5 +8,10 @@ faiss-cpu
 langchain
 langchain-community
 gitpython
+bcrypt==4.0.1
 openai
 tiktoken
+unstructured
+pdfminer.six
+python-docx
+html5lib

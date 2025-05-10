@@ -12,7 +12,7 @@ import 'package:knowledge_assistant/repositories/collections_repository.dart';
 import 'package:knowledge_assistant/repositories/settings_repository.dart';
 import 'app.dart';
 
-final baseUri = "localhost";
+final baseUri = "http://127.0.0.1:8000";
 
 void main() {
   runApp(KnowledgeAssistantApp());

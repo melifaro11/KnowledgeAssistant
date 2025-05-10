@@ -1,9 +1,13 @@
+import os
 import uuid
+import shutil
 
 from sqlalchemy.orm import Session
 from app.models.source import Source, SourceTypeEnum
 from app.schemas.source import SourceCreate
 from app.indexing.pipeline import index_source
+
+FAISS_ROOT = "storage/faiss_indexes"
 
 
 def get_sources(db: Session, collection_id: str):
@@ -32,3 +36,9 @@ def run_indexing_for_source(db: Session, source: Source, collection_id: str):
     index_source(collection_id, source.type.value, source.location)
     source.is_indexed = True
     db.commit()
+
+
+def delete_faiss_index(collection_id: str):
+    index_path = os.path.join(FAISS_ROOT, collection_id)
+    if os.path.exists(index_path):
+        shutil.rmtree(index_path)

@@ -14,8 +14,10 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     existing_user = user_service.get_user_by_email(db, user_in.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+
     user = user_service.create_user(db, user_in)
     token = create_access_token({"sub": user.id})
+
     return UserResponse(
         id=user.id,
         email=user.email,

@@ -8,7 +8,7 @@ class StorageType(str, Enum):
 
 
 class ModelType(str, Enum):
-    openAI = "openAI"
+    openai = "openai"
     localLLM = "localLLM"
 
 

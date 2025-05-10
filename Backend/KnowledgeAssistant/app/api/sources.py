@@ -54,7 +54,7 @@ def get_source(
 
 
 @router.post("/{source_id}/index", response_model=SourceResponse)
-def index_source(
+def index_source_endpoint(
     collection_id: str,
     source_id: str,
     db: Session = Depends(get_db),
@@ -64,10 +64,17 @@ def index_source(
     if not collection or collection.owner_id != current_user.id:
         raise HTTPException(status_code=404, detail="Collection not found")
 
-    source = source_service.get_source(db, source_id)
+    source = get_source(db, source_id)
     if not source or source.collection_id != collection_id:
         raise HTTPException(status_code=404, detail="Source not found")
 
-    source_service.run_indexing_for_source(db, source, collection_id)
+    # Удаляем предыдущий индекс коллекции (можно хранить по source.id, если нужно более тонко)
+    source_service.delete_faiss_index(collection_id)
+
+    # Индексируем заново
+    try:
+        source_service.run_indexing_for_source(db, source, collection_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
 
     return source

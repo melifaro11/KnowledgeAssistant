@@ -17,7 +17,7 @@ class Collection {
     return Collection(
       id: json['id'] as String,
       name: json['name'] as String,
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: DateTime.parse(json['created_at']),
       sources: (json['sources'] as List<dynamic>? ?? [])
           .map((sourceJson) => Source.fromJson(sourceJson as Map<String, dynamic>))
           .toList(),
@@ -28,7 +28,7 @@ class Collection {
     return {
       'id': id,
       'name': name,
-      'createdAt': createdAt.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
       'sources': sources.map((s) => s.toJson()).toList(),
     };
   }

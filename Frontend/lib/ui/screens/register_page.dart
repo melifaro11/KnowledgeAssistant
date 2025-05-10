@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/auth_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/auth_event.dart';
 import 'package:knowledge_assistant/bloc/states/auth_state.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Knowledge Search')),
+      appBar: AppBar(title: const Text('New user registration')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -27,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is Authenticated) {
-                  Navigator.of(context).pushReplacementNamed('/dashboard');
+                  context.go('/dashboard');
                 } else if (state is AuthError) {
                   ScaffoldMessenger.of(
                     context,
@@ -38,35 +40,40 @@ class _LoginPageState extends State<LoginPage> {
                 return Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _emailController,
                         decoration: const InputDecoration(
                           labelText: 'Email',
                           border: OutlineInputBorder(),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Введите email';
-                          }
-                          return null;
-                        },
+                        validator:
+                            (value) =>
+                                value == null || value.isEmpty
+                                    ? 'Enter email'
+                                    : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _passwordController,
                         decoration: const InputDecoration(
-                          labelText: 'Пароль',
+                          labelText: 'Password',
                           border: OutlineInputBorder(),
                         ),
                         obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Введите пароль';
-                          }
-                          return null;
-                        },
+                        validator:
+                            (value) =>
+                                value == null || value.isEmpty
+                                    ? 'Enter password'
+                                    : null,
                       ),
                       const SizedBox(height: 24),
                       SizedBox(
@@ -75,9 +82,10 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               BlocProvider.of<AuthBloc>(context).add(
-                                LoginRequested(
+                                RegisterRequested(
                                   email: _emailController.text,
                                   password: _passwordController.text,
+                                  name: _nameController.text,
                                 ),
                               );
                             }
@@ -89,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                                       Colors.white,
                                     ),
                                   )
-                                  : const Text('Войти'),
+                                  : const Text('Register'),
                         ),
                       ),
                     ],
@@ -106,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     _emailController.dispose();
+    _nameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
