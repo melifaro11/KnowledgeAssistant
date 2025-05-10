@@ -103,18 +103,6 @@ class _CollectionPageState extends State<CollectionPage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Center(
-                  child: ElevatedIconButton(
-                    width: 250,
-                    icon: const Icon(Icons.search),
-                    child: const Text('Search in collection'),
-                    onPressed:
-                        () => GoRouter.of(
-                          context,
-                        ).push('/chat/${widget.collectionId}'),
-                  ),
-                ),
                 const SizedBox(height: 16),
                 Expanded(
                   child: SingleChildScrollView(
@@ -133,6 +121,21 @@ class _CollectionPageState extends State<CollectionPage> {
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 25),
+                    child: ElevatedIconButton(
+                      width: 250,
+                      icon: const Icon(Icons.search),
+                      child: const Text('Search in collection'),
+                      onPressed:
+                          () => GoRouter.of(
+                            context,
+                          ).push('/chat/${widget.collectionId}'),
                     ),
                   ),
                 ),

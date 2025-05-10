@@ -39,42 +39,57 @@ class DashboardPage extends StatelessWidget {
                   final collection = state.collections[index];
                   return ListTile(
                     title: Text(collection.name),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () async {
-                        final confirmed = await showDialog<bool>(
-                          context: context,
-                          builder:
-                              (_) => AlertDialog(
-                                title: const Text('Delete collection?'),
-                                content: Text(
-                                  'Are you sure you want to delete the collection "${collection.name}"?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, false),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pop(context, true),
-                                    child: const Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                        );
+                    trailing: SizedBox(
+                      width: 80,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              context.push('/collection/${collection.id}');
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () async {
+                              final confirmed = await showDialog<bool>(
+                                context: context,
+                                builder:
+                                    (_) => AlertDialog(
+                                      title: const Text('Delete collection?'),
+                                      content: Text(
+                                        'Are you sure you want to delete the collection "${collection.name}"?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () =>
+                                                  Navigator.pop(context, false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed:
+                                              () =>
+                                                  Navigator.pop(context, true),
+                                          child: const Text('Delete'),
+                                        ),
+                                      ],
+                                    ),
+                              );
 
-                        if (confirmed == true) {
-                          context.read<CollectionsBloc>().add(
-                            DeleteCollection(collection.id),
-                          );
-                        }
-                      },
+                              if (confirmed == true) {
+                                context.read<CollectionsBloc>().add(
+                                  DeleteCollection(collection.id),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    onTap: () {
-                      context.push('/collection/${collection.id}');
-                    },
+                    onTap:
+                        () =>
+                            GoRouter.of(context).push('/chat/${collection.id}'),
                   );
                 },
               ),
