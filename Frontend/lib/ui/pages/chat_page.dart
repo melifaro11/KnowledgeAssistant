@@ -69,7 +69,7 @@ class _ChatPageState extends State<ChatPage> {
             child: TextFieldDecorated(
               controller: _controller,
               minLines: 1,
-              maxLines: 3,
+              maxLines: 2,
               suffix: IconButton(
                 icon: const Icon(Icons.send),
                 onPressed: () {
