@@ -33,7 +33,12 @@ def add_source(
     collection = collection_service.get_collection(db, collection_id)
     if not collection or collection.owner_id != current_user.id:
         raise HTTPException(status_code=404, detail="Collection not found")
-    return source_service.create_source(db, collection_id, source_in)
+
+    source = source_service.create_source(db, collection_id, source_in)
+
+    source_service.reindex_source(db, source, collection_id)
+
+    return source
 
 
 @router.get("/{source_id}", response_model=SourceResponse)
@@ -54,7 +59,7 @@ def get_source(
 
 
 @router.post("/{source_id}/index", response_model=SourceResponse)
-def index_source_endpoint(
+def index_source(
     collection_id: str,
     source_id: str,
     db: Session = Depends(get_db),
@@ -64,17 +69,25 @@ def index_source_endpoint(
     if not collection or collection.owner_id != current_user.id:
         raise HTTPException(status_code=404, detail="Collection not found")
 
-    source = get_source(db, source_id)
+    source = source_service.get_source(db, source_id)
     if not source or source.collection_id != collection_id:
         raise HTTPException(status_code=404, detail="Source not found")
 
-    # Удаляем предыдущий индекс коллекции (можно хранить по source.id, если нужно более тонко)
-    source_service.delete_faiss_index(collection_id)
+    return source_service.reindex_source(db, source, collection_id)
 
-    # Индексируем заново
-    try:
-        source_service.run_indexing_for_source(db, source, collection_id)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
+@router.delete("/{source_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_source(
+    collection_id: str,
+    source_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    collection = collection_service.get_collection(db, collection_id)
+    if not collection or collection.owner_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Collection not found")
 
-    return source
+    source = source_service.get_source(db, source_id)
+    if not source or source.collection_id != collection_id:
+        raise HTTPException(status_code=404, detail="Source not found")
+
+    source_service.delete_source(db, source_id, collection_id)

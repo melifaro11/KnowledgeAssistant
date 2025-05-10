@@ -1,4 +1,3 @@
-
 abstract class CollectionsEvent {
   const CollectionsEvent();
 }
@@ -15,4 +14,30 @@ class DeleteCollection extends CollectionsEvent {
   final String id;
 
   const DeleteCollection(this.id);
+}
+
+class LoadCollectionById extends CollectionsEvent {
+  final String id;
+  LoadCollectionById(this.id);
+}
+
+class AddSourceToCollection extends CollectionsEvent {
+  final String collectionId;
+  final String name;
+  final String type;
+  final String? location;
+
+  AddSourceToCollection({
+    required this.collectionId,
+    required this.name,
+    required this.type,
+    this.location,
+  });
+}
+
+class DeleteSourceFromCollection extends CollectionsEvent {
+  final String collectionId;
+  final String sourceId;
+
+  DeleteSourceFromCollection(this.collectionId, this.sourceId);
 }

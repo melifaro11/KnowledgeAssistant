@@ -1,8 +1,4 @@
-enum SourceType {
-  file,
-  git,
-  url,
-}
+enum SourceType { file, git, url }
 
 class Source {
   final String id;
@@ -11,6 +7,7 @@ class Source {
   final DateTime addedAt;
   final String? location;
   final bool isIndexed;
+  final String? lastError;
 
   Source({
     required this.id,
@@ -19,6 +16,7 @@ class Source {
     required this.addedAt,
     this.location,
     this.isIndexed = false,
+    this.lastError
   });
 
   factory Source.fromJson(Map<String, dynamic> json) {
@@ -26,11 +24,12 @@ class Source {
       id: json['id'] as String,
       name: json['name'] as String,
       type: SourceType.values.firstWhere(
-            (e) => e.toString() == 'SourceType.${json['type']}',
+        (e) => e.toString() == 'SourceType.${json['type']}',
       ),
-      addedAt: DateTime.parse(json['addedAt']),
+      addedAt: DateTime.parse(json['added_at']),
       location: json['location'] as String?,
       isIndexed: json['isIndexed'] as bool? ?? false,
+      lastError: json['lastError'] as String?,
     );
   }
 
@@ -39,7 +38,7 @@ class Source {
       'id': id,
       'name': name,
       'type': type.toString().split('.').last,
-      'addedAt': addedAt.toIso8601String(),
+      'added_at': addedAt.toIso8601String(),
       'location': location,
       'isIndexed': isIndexed,
     };

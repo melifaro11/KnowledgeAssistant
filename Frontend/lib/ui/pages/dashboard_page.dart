@@ -38,14 +38,38 @@ class DashboardPage extends StatelessWidget {
                   title: Text(collection.name),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      context.read<CollectionsBloc>().add(
-                        DeleteCollection(collection.id),
+                    onPressed: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder:
+                            (_) => AlertDialog(
+                              title: const Text('Удалить коллекцию?'),
+                              content: Text(
+                                'Вы уверены, что хотите удалить "${collection.name}"?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed:
+                                      () => Navigator.pop(context, false),
+                                  child: const Text('Отмена'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Удалить'),
+                                ),
+                              ],
+                            ),
                       );
+
+                      if (confirmed == true) {
+                        context.read<CollectionsBloc>().add(
+                          DeleteCollection(collection.id),
+                        );
+                      }
                     },
                   ),
                   onTap: () {
-                    // TODO: переход на CollectionPage
+                    context.push('/collection/${collection.id}');
                   },
                 );
               },

@@ -21,6 +21,7 @@ class Source(Base):
     added_at = Column(DateTime, default=datetime.utcnow)
     location = Column(String, nullable=True)
     is_indexed = Column(Boolean, default=False)
+    last_error = Column(String, nullable=True)
 
     collection_id = Column(String, ForeignKey("collections.id"))
     collection = relationship("Collection", back_populates="sources")

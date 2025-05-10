@@ -29,16 +29,30 @@ def create_source(db: Session, collection_id: str, source_in: SourceCreate):
     db.add(source)
     db.commit()
     db.refresh(source)
+
     return source
 
 
-def run_indexing_for_source(db: Session, source: Source, collection_id: str):
-    index_source(collection_id, source.type.value, source.location)
-    source.is_indexed = True
+def reindex_source(db: Session, source: Source, collection_id: str):
+    try:
+        index_source(collection_id, source.id, source.type.value, source.location)
+        source.is_indexed = True
+        source.last_error = None
+    except Exception as e:
+        source.is_indexed = False
+        source.last_error = str(e)
     db.commit()
+    db.refresh(source)
+
+    return source
 
 
-def delete_faiss_index(collection_id: str):
-    index_path = os.path.join(FAISS_ROOT, collection_id)
+def delete_source(db: Session, source_id: str, collection_id: str):
+    index_path = os.path.join("storage/faiss_indexes", collection_id, source_id)
     if os.path.exists(index_path):
         shutil.rmtree(index_path)
+
+    source = get_source(db, source_id)
+    if source:
+        db.delete(source)
+        db.commit()

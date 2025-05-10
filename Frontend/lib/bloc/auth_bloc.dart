@@ -31,6 +31,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onLogoutRequested(
+    LogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      await tokenStorage.clearToken();
+      emit(Unauthenticated());
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
   Future<void> _onRegisterRequested(
     RegisterRequested event,
     Emitter<AuthState> emit,
@@ -42,20 +55,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
         name: event.name,
       );
-      emit(Authenticated(user));
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
-  }
 
-  Future<void> _onLogoutRequested(
-    LogoutRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(AuthLoading());
-    try {
-      await tokenStorage.clearToken();
-      emit(Unauthenticated());
+      await tokenStorage.saveToken(user.authToken!);
+
+      emit(Authenticated(user));
     } catch (e) {
       emit(AuthError(e.toString()));
     }

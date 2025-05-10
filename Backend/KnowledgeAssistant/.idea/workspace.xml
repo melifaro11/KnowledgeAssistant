@@ -5,20 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/services/auth_token_storage.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/register_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/auth_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/auth_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/auth_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/auth_event.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/auth_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/auth_repository.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/chat_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/chat_repository.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/collections_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/collections_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collections_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collections_event.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Frontend/lib/routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/routes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/chat_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/chat_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/collection_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/collection_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/dashboard_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/dashboard_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/login_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/settings_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/settings_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/chat_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/chat_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/collection_page.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/dashboard_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/dashboard_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/login_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/login_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/register_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/register_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/settings_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/settings_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,14 +47,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.main.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant" />

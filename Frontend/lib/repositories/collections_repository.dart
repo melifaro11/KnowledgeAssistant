@@ -23,7 +23,7 @@ class CollectionsRepository {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Ошибка загрузки коллекций');
+      throw Exception('Collection loading error');
     }
 
     final List<dynamic> data = jsonDecode(response.body);
@@ -46,7 +46,7 @@ class CollectionsRepository {
     );
 
     if (response.statusCode != 201) {
-      throw Exception('Ошибка создания коллекции');
+      throw Exception('Collection creating error');
     }
 
     final data = jsonDecode(response.body);
@@ -65,7 +65,7 @@ class CollectionsRepository {
     );
 
     if (response.statusCode != 204) {
-      throw Exception('Ошибка удаления коллекции');
+      throw Exception('Collection deleting error');
     }
   }
 
@@ -81,10 +81,78 @@ class CollectionsRepository {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Коллекция не найдена');
+      throw Exception('Collection not found');
     }
 
     final data = jsonDecode(response.body);
     return Collection.fromJson(data);
+  }
+
+  Future<Collection> addSourceToCollection(
+    String collectionId,
+    String name,
+    String type,
+    String? location,
+  ) async {
+    final token = await tokenStorage.getToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final response = await httpClient.post(
+      Uri.parse('$baseUrl/collections/$collectionId/sources'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'name': name, 'type': type, 'location': location}),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Error adding source');
+    }
+
+    final collection = await getCollectionById(collectionId);
+    return collection;
+  }
+
+  Future<void> reindexSource(String collectionId, String sourceId) async {
+    final token = await tokenStorage.getToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final response = await httpClient.post(
+      Uri.parse('$baseUrl/collections/$collectionId/sources/$sourceId/index'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Source indexing error');
+    }
+  }
+
+  Future<Collection> deleteSourceFromCollection(
+    String collectionId,
+    String sourceId,
+  ) async {
+    final token = await tokenStorage.getToken();
+    if (token == null) {
+      throw Exception('User is not authenticated');
+    }
+
+    final response = await httpClient.delete(
+      Uri.parse('$baseUrl/collections/$collectionId/sources/$sourceId'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('Source deleting error');
+    }
+
+    return await getCollectionById(collectionId);
   }
 }

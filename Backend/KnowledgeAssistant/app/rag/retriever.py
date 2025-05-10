@@ -1,52 +1,57 @@
-import os
 from typing import Tuple, List
-from app.schemas.chat import ChatSource
-
-from app.rag.registry import get_embeddings, get_llm
-
+from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
-
-from langchain_community.vectorstores import FAISS
-from langchain_community.docstore.document import Document
+from langchain.docstore.document import Document
+from langchain.vectorstores.base import VectorStoreRetriever
+from langchain.chains.retrieval_qa.base import RetrievalQA
+from app.schemas.chat import ChatSource
+from app.rag.registry import get_llm, get_embeddings
+import os
 
 FAISS_ROOT = "storage/faiss_indexes"
 
 
-def load_vector_store(collection_id: str) -> FAISS:
-    index_path = os.path.join(FAISS_ROOT, collection_id)
-    if not os.path.exists(index_path):
-        raise ValueError(f"FAISS index for collection {collection_id} not found")
+def load_vectorstores(collection_id: str) -> List[VectorStoreRetriever]:
+    collection_path = os.path.join(FAISS_ROOT, collection_id)
+    if not os.path.exists(collection_path):
+        return []
 
-    return FAISS.load_local(
-        folder_path=index_path,
-        embeddings=get_embeddings(),
-    )
+    retrievers = []
+    for source_id in os.listdir(collection_path):
+        source_path = os.path.join(collection_path, source_id)
+        if os.path.isdir(source_path):
+            try:
+                db = FAISS.load_local(folder_path=source_path, embeddings=get_embeddings())
+                retrievers.append(db.as_retriever(search_kwargs={"k": 3}))
+            except Exception:
+                continue
+    return retrievers
 
 
 def ask_with_rag(collection_id: str, question: str) -> Tuple[str, List[ChatSource]]:
-    # Загрузка индекса
-    vectorstore = load_vector_store(collection_id)
+    retrievers = load_vectorstores(collection_id)
+    if not retrievers:
+        return "В коллекции нет проиндексированных источников.", []
 
-    # Настройка модели
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
     llm = get_llm()
 
-    # RAG цепочка
-    qa = RetrievalQA.from_chain_type(
-        llm=llm,
-        retriever=retriever,
-        return_source_documents=True,
-    )
+    # Наивное объединение документов из всех retrievers
+    all_docs = []
+    for retriever in retrievers:
+        all_docs.extend(retriever.get_relevant_documents(question))
 
-    result = qa(question)
+    if not all_docs:
+        return "Не найдено релевантных документов.", []
+
+    qa = RetrievalQA.from_chain_type(llm=llm, return_source_documents=True)
+    result = qa.run(all_docs, return_only_outputs=False)
+
     answer = result["result"]
     docs: List[Document] = result["source_documents"]
 
-    # Собираем список источников
     sources = []
     for doc in docs:
-        metadata = doc.metadata
-        title = metadata.get("title") or metadata.get("source") or "Unknown"
-        sources.append(ChatSource(title=title, url=metadata.get("url"), page=None))
+        title = doc.metadata.get("title") or doc.metadata.get("source") or "Источник"
+        sources.append(ChatSource(title=title))
 
     return answer, sources

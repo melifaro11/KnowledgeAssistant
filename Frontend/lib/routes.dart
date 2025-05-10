@@ -2,12 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/auth_bloc.dart';
 import 'package:knowledge_assistant/bloc/states/auth_state.dart';
-import 'package:knowledge_assistant/ui/screens/chat_page.dart';
-import 'package:knowledge_assistant/ui/screens/collection_page.dart';
-import 'package:knowledge_assistant/ui/screens/dashboard_page.dart';
-import 'package:knowledge_assistant/ui/screens/login_page.dart';
-import 'package:knowledge_assistant/ui/screens/register_page.dart';
-import 'package:knowledge_assistant/ui/screens/settings_page.dart';
+import 'package:knowledge_assistant/ui/pages/chat_page.dart';
+import 'package:knowledge_assistant/ui/pages/collection_page.dart';
+import 'package:knowledge_assistant/ui/pages/dashboard_page.dart';
+import 'package:knowledge_assistant/ui/pages/login_page.dart';
+import 'package:knowledge_assistant/ui/pages/register_page.dart';
+import 'package:knowledge_assistant/ui/pages/settings_page.dart';
 
 
 class AppRouter {
@@ -42,7 +42,7 @@ class AppRouter {
         path: '/collection/:id',
         builder: (context, state) {
           final collectionId = state.pathParameters['id']!;
-          return CollectionsPage();
+          return CollectionPage(collectionId: collectionId);
         },
       ),
       GoRoute(

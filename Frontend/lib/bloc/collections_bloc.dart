@@ -11,46 +11,116 @@ class CollectionsBloc extends Bloc<CollectionsEvent, CollectionsState> {
     on<LoadCollections>(_onLoadCollections);
     on<CreateCollection>(_onCreateCollection);
     on<DeleteCollection>(_onDeleteCollection);
+    on<LoadCollectionById>(_onLoadCollectionById);
+    on<AddSourceToCollection>(_onAddSourceToCollection);
+    on<DeleteSourceFromCollection>(_onDeleteSourceFromCollection);
   }
 
   Future<void> _onLoadCollections(
-      LoadCollections event, Emitter<CollectionsState> emit) async {
+    LoadCollections event,
+    Emitter<CollectionsState> emit,
+  ) async {
     emit(CollectionsLoading());
     try {
       final collections = await repository.fetchCollections();
       emit(CollectionsLoaded(collections));
     } catch (e) {
-      emit(CollectionsError('Ошибка загрузки коллекций: ${e.toString()}'));
+      emit(CollectionsError('Collection loading error: ${e.toString()}'));
     }
   }
 
   Future<void> _onCreateCollection(
-      CreateCollection event, Emitter<CollectionsState> emit) async {
+    CreateCollection event,
+    Emitter<CollectionsState> emit,
+  ) async {
     if (state is CollectionsLoaded) {
       try {
         final newCollection = await repository.createCollection(event.name);
         final updated = List<Collection>.from(
-            (state as CollectionsLoaded).collections)
-          ..add(newCollection);
+          (state as CollectionsLoaded).collections,
+        )..add(newCollection);
         emit(CollectionsLoaded(updated));
       } catch (e) {
-        emit(CollectionsError('Ошибка создания коллекции: ${e.toString()}'));
+        emit(CollectionsError('Collection creating error: ${e.toString()}'));
       }
     }
   }
 
   Future<void> _onDeleteCollection(
-      DeleteCollection event, Emitter<CollectionsState> emit) async {
+    DeleteCollection event,
+    Emitter<CollectionsState> emit,
+  ) async {
     if (state is CollectionsLoaded) {
       try {
         await repository.deleteCollection(event.id);
-        final updated = (state as CollectionsLoaded)
-            .collections
-            .where((c) => c.id != event.id)
-            .toList();
+        final updated =
+            (state as CollectionsLoaded).collections
+                .where((c) => c.id != event.id)
+                .toList();
         emit(CollectionsLoaded(updated));
       } catch (e) {
-        emit(CollectionsError('Ошибка удаления коллекции: ${e.toString()}'));
+        emit(CollectionsError('Error deleting collection: ${e.toString()}'));
+      }
+    }
+  }
+
+  Future<void> _onLoadCollectionById(
+    LoadCollectionById event,
+    Emitter<CollectionsState> emit,
+  ) async {
+    emit(CollectionsLoading());
+    try {
+      final collection = await repository.getCollectionById(event.id);
+      emit(CollectionsLoaded([collection]));
+    } catch (e) {
+      emit(CollectionsError('Error adding source: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onAddSourceToCollection(
+    AddSourceToCollection event,
+    Emitter<CollectionsState> emit,
+  ) async {
+    if (state is CollectionsLoaded) {
+      try {
+        final updated = await repository.addSourceToCollection(
+          event.collectionId,
+          event.name,
+          event.type,
+          event.location,
+        );
+        emit(
+          CollectionsLoaded(
+            (state as CollectionsLoaded).collections
+                .map((c) => c.id == updated.id ? updated : c)
+                .toList(),
+          ),
+        );
+      } catch (e) {
+        emit(CollectionsError('Error adding source: ${e.toString()}'));
+      }
+    }
+  }
+
+  Future<void> _onDeleteSourceFromCollection(
+    DeleteSourceFromCollection event,
+    Emitter<CollectionsState> emit,
+  ) async {
+    if (state is CollectionsLoaded) {
+      try {
+        final updated = await repository.deleteSourceFromCollection(
+          event.collectionId,
+          event.sourceId,
+        );
+        emit(
+          CollectionsLoaded(
+            (state as CollectionsLoaded).collections
+                .map((c) => c.id == updated.id ? updated : c)
+                .toList(),
+          ),
+        );
+      } catch (e) {
+        emit(CollectionsError('Source deleting error: ${e.toString()}'));
       }
     }
   }

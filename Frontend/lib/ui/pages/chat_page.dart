@@ -4,10 +4,11 @@ import 'package:knowledge_assistant/bloc/chat_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/chat_event.dart';
 import 'package:knowledge_assistant/bloc/states/chat_state.dart';
 
+
 class ChatPage extends StatefulWidget {
   final String collectionId;
 
-  const ChatPage({Key? key, required this.collectionId}) : super(key: key);
+  const ChatPage({super.key, required this.collectionId});
 
   @override
   State<ChatPage> createState() => _ChatPageState();

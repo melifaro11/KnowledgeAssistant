@@ -20,9 +20,10 @@ class SourceResponse(BaseModel):
     id: str
     name: str
     type: SourceType
-    addedAt: datetime
+    added_at: datetime
     location: Optional[str] = None
     isIndexed: bool = False
+    lastError: Optional[str] = None
 
     class Config:
         from_attributes = True

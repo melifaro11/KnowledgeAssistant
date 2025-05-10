@@ -41,6 +41,11 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Image.asset(
+                        "assets/images/login_icon.png",
+                        width: 190,
+                        opacity: const AlwaysStoppedAnimation(0.7),
+                      ),
                       TextFormField(
                         controller: _emailController,
                         decoration: const InputDecoration(
