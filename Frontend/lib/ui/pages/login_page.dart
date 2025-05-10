@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/auth_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/auth_event.dart';
 import 'package:knowledge_assistant/bloc/states/auth_state.dart';
+import 'package:knowledge_assistant/ui/widgets/elevated_icon_button.dart';
+import 'package:knowledge_assistant/ui/widgets/textformfield_decorated.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,9 +20,19 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Knowledge Search')),
+      appBar: AppBar(
+        elevation: 10,
+        title: const Text('AI Knowledge Assistant'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -28,85 +40,105 @@ class _LoginPageState extends State<LoginPage> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is Authenticated) {
-                  context.go('/dashboard');
-                } else if (state is AuthError) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.message)));
+                  GoRouter.of(context).go('/dashboard');
                 }
               },
               builder: (context, state) {
+                final String? errorText =
+                    state is AuthError ? state.message : null;
+
                 return Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        "assets/images/login_icon.png",
-                        width: 190,
-                        opacity: const AlwaysStoppedAnimation(0.7),
-                      ),
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
+                      Center(
+                        child: Image.asset(
+                          "assets/images/login_icon.png",
+                          width: 220,
+                          opacity: const AlwaysStoppedAnimation(0.7),
                         ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormFieldDecorated(
+                        controller: _emailController,
+                        hintText: "Your email",
+                        labelText: "Login",
+                        width: 350,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Введите email';
+                            return 'Enter e-mail';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
+                      TextFormFieldDecorated(
                         controller: _passwordController,
-                        decoration: const InputDecoration(
-                          labelText: 'Пароль',
-                          border: OutlineInputBorder(),
-                        ),
+                        hintText: "Your password",
+                        labelText: "Password",
                         obscureText: true,
+                        width: 350,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Введите пароль';
+                            return 'Enter password';
                           }
                           return null;
                         },
                       ),
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              BlocProvider.of<AuthBloc>(context).add(
-                                LoginRequested(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                ),
-                              );
-                            }
-                          },
-                          child:
-                              state is AuthLoading
-                                  ? const CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  )
-                                  : const Text('Login'),
+                      if (errorText != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          errorText,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.push('/register');
-                          },
-                          child: Text("Register"),
-                        ),
+                      ],
+                      const SizedBox(height: 34),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedIconButton(
+                            width: 200,
+                            onPressed: () {
+                              _formKey.currentState!.save();
+
+                              if (_formKey.currentState!.validate()) {
+                                BlocProvider.of<AuthBloc>(context).add(
+                                  LoginRequested(
+                                    email: _emailController.text.trim(),
+                                    password: _passwordController.text,
+                                  ),
+                                );
+                              }
+                            },
+                            child:
+                                state is AuthLoading
+                                    ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                      ),
+                                    )
+                                    : const Text('Login'),
+                          ),
+                          const SizedBox(width: 15),
+                          ElevatedIconButton(
+                            width: 200,
+                            onPressed: () {
+                              context.read<AuthBloc>().add(ClearAuthError());
+                              GoRouter.of(context).push('/register');
+                            },
+                            child: const Text("Register"),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -117,12 +149,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

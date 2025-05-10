@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:knowledge_assistant/models/source.dart';
 import 'package:knowledge_assistant/services/auth_token_storage.dart';
 import '../models/collection.dart';
 
@@ -85,7 +87,17 @@ class CollectionsRepository {
     }
 
     final data = jsonDecode(response.body);
-    return Collection.fromJson(data);
+
+    //return Collection.fromJson(data);
+    final collections = Collection.fromJson(data);
+    debugPrint('Collections: ');
+    debugPrint(collections.toString());
+    for (final s in collections.sources) {
+      debugPrint(s.name);
+      debugPrint(s.lastError);
+    }
+
+    return collections;
   }
 
   Future<Collection> addSourceToCollection(
@@ -112,11 +124,14 @@ class CollectionsRepository {
       throw Exception('Error adding source');
     }
 
+    //debugPrint(response.body);
+
     final collection = await getCollectionById(collectionId);
+
     return collection;
   }
 
-  Future<void> reindexSource(String collectionId, String sourceId) async {
+  Future<Source> reindexSource(String collectionId, String sourceId) async {
     final token = await tokenStorage.getToken();
     if (token == null) {
       throw Exception('User is not authenticated');
@@ -131,8 +146,14 @@ class CollectionsRepository {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Source indexing error');
+      throw Exception('Source indexing error: ${response.body}');
     }
+
+    final data = jsonDecode(response.body);
+
+    debugPrint(data);
+
+    return Source.fromJson(data);
   }
 
   Future<Collection> deleteSourceFromCollection(

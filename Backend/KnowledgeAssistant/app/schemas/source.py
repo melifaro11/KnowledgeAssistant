@@ -23,7 +23,7 @@ class SourceResponse(BaseModel):
     added_at: datetime
     location: Optional[str] = None
     isIndexed: bool = False
-    lastError: Optional[str] = None
+    last_error: Optional[str] = None
 
     class Config:
         from_attributes = True

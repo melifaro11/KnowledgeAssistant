@@ -23,3 +23,5 @@ class RegisterRequested extends AuthEvent {
     this.name,
   });
 }
+
+class ClearAuthError extends AuthEvent {}

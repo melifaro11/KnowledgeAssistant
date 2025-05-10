@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/collections_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/collections_event.dart';
 import 'package:knowledge_assistant/bloc/states/collections_state.dart';
@@ -15,7 +16,7 @@ class CollectionPage extends StatefulWidget {
 }
 
 class _CollectionPageState extends State<CollectionPage> {
-  Set<String> _indexingSources = {};
+  final Set<String> _indexingSources = {};
 
   @override
   void initState() {
@@ -108,6 +109,13 @@ class _CollectionPageState extends State<CollectionPage> {
                   collection.name,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.search),
+                  label: const Text('Поиск по коллекции'),
+                  onPressed: () {
+                    GoRouter.of(context).push('/chat/${widget.collectionId}');
+                  },
+                ),
                 const SizedBox(height: 16),
                 ...collection.sources.map(
                   (s) => ListTile(
@@ -141,11 +149,14 @@ class _CollectionPageState extends State<CollectionPage> {
                                 });
 
                                 try {
-                                  await context
+                                  final updatedSource = await context
                                       .read<CollectionsRepository>()
                                       .reindexSource(widget.collectionId, s.id);
                                   context.read<CollectionsBloc>().add(
-                                    LoadCollectionById(widget.collectionId),
+                                    UpdateSourceInCollection(
+                                      widget.collectionId,
+                                      updatedSource,
+                                    ),
                                   );
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(

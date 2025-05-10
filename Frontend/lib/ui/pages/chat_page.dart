@@ -4,7 +4,6 @@ import 'package:knowledge_assistant/bloc/chat_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/chat_event.dart';
 import 'package:knowledge_assistant/bloc/states/chat_state.dart';
 
-
 class ChatPage extends StatefulWidget {
   final String collectionId;
 
@@ -16,6 +15,17 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final _controller = TextEditingController();
+
+  final ScrollController _scrollController = ScrollController();
+
+  Future<void> _scrollToEnd() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
 
   @override
   void initState() {
@@ -36,15 +46,43 @@ class _ChatPageState extends State<ChatPage> {
                   return Center(child: CircularProgressIndicator());
                 } else if (state is ChatLoaded) {
                   return ListView.builder(
+                    controller: _scrollController,
                     itemCount: state.messages.length,
                     itemBuilder: (context, index) {
                       final msg = state.messages[index];
                       return ListTile(
-                        title: Text(msg.answer),
-                        subtitle: Text(
-                          'Источник: ${msg.sources ?? "неизвестно"}',
-                          style: TextStyle(fontSize: 12),
+                        title: Text(
+                          msg.question,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 8),
+                            Text(msg.answer),
+                            if (msg.sources.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                children:
+                                    msg.sources.map((s) {
+                                      final label =
+                                          s.url != null
+                                              ? s.title
+                                              : '${s.title} (локально)';
+                                      return Chip(
+                                        label: Text(
+                                          label,
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                        backgroundColor: Colors.grey.shade200,
+                                      );
+                                    }).toList(),
+                              ),
+                            ],
+                          ],
+                        ),
+                        isThreeLine: true,
                       );
                     },
                   );
@@ -80,6 +118,10 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                       );
                       _controller.clear();
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollToEnd();
+                      });
                     }
                   },
                 ),

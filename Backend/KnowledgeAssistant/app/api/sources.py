@@ -36,7 +36,11 @@ def add_source(
 
     source = source_service.create_source(db, collection_id, source_in)
 
-    source_service.reindex_source(db, source, collection_id)
+    source = source_service.reindex_source(db, source, collection_id)
+    print(f'Added source: {source}')
+    print(source.last_error)
+    print(source.collection_id)
+    print(source.name)
 
     return source
 
@@ -73,7 +77,12 @@ def index_source(
     if not source or source.collection_id != collection_id:
         raise HTTPException(status_code=404, detail="Source not found")
 
-    return source_service.reindex_source(db, source, collection_id)
+    source = source_service.reindex_source(db, source, collection_id)
+
+    print(f'Indexed source: {source}')
+
+    return source
+
 
 @router.delete("/{source_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_source(

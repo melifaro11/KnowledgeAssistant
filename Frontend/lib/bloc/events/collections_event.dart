@@ -1,3 +1,5 @@
+import 'package:knowledge_assistant/models/source.dart';
+
 abstract class CollectionsEvent {
   const CollectionsEvent();
 }
@@ -40,4 +42,11 @@ class DeleteSourceFromCollection extends CollectionsEvent {
   final String sourceId;
 
   DeleteSourceFromCollection(this.collectionId, this.sourceId);
+}
+
+class UpdateSourceInCollection extends CollectionsEvent {
+  final String collectionId;
+  final Source updatedSource;
+
+  UpdateSourceInCollection(this.collectionId, this.updatedSource);
 }

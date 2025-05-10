@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import 'source.dart';
 
 class Collection {
@@ -13,14 +15,35 @@ class Collection {
     this.sources = const [],
   });
 
+  Collection copyWith({
+    String? id,
+    String? name,
+    DateTime? createdAt,
+    List<Source>? sources,
+  }) {
+    return Collection(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      sources: sources ?? this.sources,
+    );
+  }
+
   factory Collection.fromJson(Map<String, dynamic> json) {
+    debugPrint(json['id']);
+    debugPrint(json['name']);
+    debugPrint(json['created_at']);
     return Collection(
       id: json['id'] as String,
       name: json['name'] as String,
       createdAt: DateTime.parse(json['created_at']),
-      sources: (json['sources'] as List<dynamic>? ?? [])
-          .map((sourceJson) => Source.fromJson(sourceJson as Map<String, dynamic>))
-          .toList(),
+      sources:
+          (json['sources'] as List<dynamic>? ?? [])
+              .map(
+                (sourceJson) =>
+                    Source.fromJson(sourceJson as Map<String, dynamic>),
+              )
+              .toList(),
     );
   }
 

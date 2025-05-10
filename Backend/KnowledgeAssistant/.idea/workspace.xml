@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/collections_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/collections_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collections_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collections_event.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/routes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/chat_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/chat_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/collection_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/dashboard_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/dashboard_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/login_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/login_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/register_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/register_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/screens/settings_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/settings_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/chat_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/chat_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,3 +1,4 @@
+
 enum SourceType { file, git, url }
 
 class Source {
@@ -16,7 +17,7 @@ class Source {
     required this.addedAt,
     this.location,
     this.isIndexed = false,
-    this.lastError
+    this.lastError,
   });
 
   factory Source.fromJson(Map<String, dynamic> json) {
@@ -29,7 +30,7 @@ class Source {
       addedAt: DateTime.parse(json['added_at']),
       location: json['location'] as String?,
       isIndexed: json['isIndexed'] as bool? ?? false,
-      lastError: json['lastError'] as String?,
+      lastError: json['last_error'] as String?,
     );
   }
 

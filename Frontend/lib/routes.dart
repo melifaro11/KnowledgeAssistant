@@ -9,7 +9,6 @@ import 'package:knowledge_assistant/ui/pages/login_page.dart';
 import 'package:knowledge_assistant/ui/pages/register_page.dart';
 import 'package:knowledge_assistant/ui/pages/settings_page.dart';
 
-
 class AppRouter {
   static final router = GoRouter(
     initialLocation: '/',
@@ -26,14 +25,8 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: '/',
-        redirect: (_, __) => '/dashboard',
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(path: '/', redirect: (_, __) => '/dashboard'),
       GoRoute(
         path: '/dashboard',
         builder: (context, state) => const DashboardPage(),

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/auth_event.dart';
 import 'package:knowledge_assistant/bloc/states/auth_state.dart';
 import 'package:knowledge_assistant/services/auth_token_storage.dart';
+
 import '../../repositories/auth_repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -12,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<RegisterRequested>(_onRegisterRequested);
+    on<ClearAuthError>((event, emit) => emit(AuthInitial()));
   }
 
   Future<void> _onLoginRequested(

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/collections_event.dart';
 import 'package:knowledge_assistant/bloc/states/collections_state.dart';
@@ -14,6 +15,7 @@ class CollectionsBloc extends Bloc<CollectionsEvent, CollectionsState> {
     on<LoadCollectionById>(_onLoadCollectionById);
     on<AddSourceToCollection>(_onAddSourceToCollection);
     on<DeleteSourceFromCollection>(_onDeleteSourceFromCollection);
+    on<UpdateSourceInCollection>(_onUpdateSourceInCollection);
   }
 
   Future<void> _onLoadCollections(
@@ -70,8 +72,11 @@ class CollectionsBloc extends Bloc<CollectionsEvent, CollectionsState> {
   ) async {
     emit(CollectionsLoading());
     try {
+      debugPrint('AAA');
       final collection = await repository.getCollectionById(event.id);
+      debugPrint('BBB');
       emit(CollectionsLoaded([collection]));
+      debugPrint('CCC');
     } catch (e) {
       emit(CollectionsError('Error adding source: ${e.toString()}'));
     }
@@ -89,6 +94,7 @@ class CollectionsBloc extends Bloc<CollectionsEvent, CollectionsState> {
           event.type,
           event.location,
         );
+
         emit(
           CollectionsLoaded(
             (state as CollectionsLoaded).collections
@@ -122,6 +128,30 @@ class CollectionsBloc extends Bloc<CollectionsEvent, CollectionsState> {
       } catch (e) {
         emit(CollectionsError('Source deleting error: ${e.toString()}'));
       }
+    }
+  }
+
+  Future<void> _onUpdateSourceInCollection(
+    UpdateSourceInCollection event,
+    Emitter<CollectionsState> emit,
+  ) async {
+    if (state is CollectionsLoaded) {
+      final current = (state as CollectionsLoaded).collections;
+      final index = current.indexWhere((c) => c.id == event.collectionId);
+      if (index == -1) return;
+
+      final collection = current[index];
+      final updatedSources =
+          collection.sources.map((s) {
+            return s.id == event.updatedSource.id ? event.updatedSource : s;
+          }).toList();
+
+      final updatedCollection = collection.copyWith(sources: updatedSources);
+
+      final updated = [...current];
+      updated[index] = updatedCollection;
+
+      emit(CollectionsLoaded(updated));
     }
   }
 }

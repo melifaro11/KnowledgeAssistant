@@ -10,9 +10,13 @@ import 'package:knowledge_assistant/repositories/auth_repository.dart';
 import 'package:knowledge_assistant/repositories/chat_repository.dart';
 import 'package:knowledge_assistant/repositories/collections_repository.dart';
 import 'package:knowledge_assistant/repositories/settings_repository.dart';
-import 'app.dart';
+import 'package:knowledge_assistant/routes.dart';
 
 final baseUri = "http://127.0.0.1:8000";
+
+final lightTheme = ThemeData.light(useMaterial3: true);
+
+final darkTheme = ThemeData.dark(useMaterial3: true);
 
 void main() {
   runApp(KnowledgeAssistantApp());
@@ -21,7 +25,9 @@ void main() {
 class KnowledgeAssistantApp extends StatelessWidget {
   final AuthRepository authRepository = AuthRepository(baseUrl: baseUri);
   final ChatRepository chatRepository = ChatRepository(baseUrl: baseUri);
-  final CollectionsRepository collectionsRepository = CollectionsRepository(baseUrl: baseUri);
+  final CollectionsRepository collectionsRepository = CollectionsRepository(
+    baseUrl: baseUri,
+  );
   final SettingsRepository settingsRepository = SettingsRepository();
 
   KnowledgeAssistantApp({super.key});
@@ -38,25 +44,31 @@ class KnowledgeAssistantApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) =>
-                AuthBloc(authRepository: authRepository),
+            create: (context) => AuthBloc(authRepository: authRepository),
           ),
           BlocProvider(
-            create: (context) =>
-                ChatBloc(repository: chatRepository),
+            create: (context) => ChatBloc(repository: chatRepository),
           ),
           BlocProvider(
-            create: (context) =>
-            CollectionsBloc(repository: collectionsRepository)
-              ..add(LoadCollections()),
+            create:
+                (context) =>
+                    CollectionsBloc(repository: collectionsRepository)
+                      ..add(LoadCollections()),
           ),
           BlocProvider(
-            create: (context) =>
-            SettingsBloc(repository: settingsRepository)
-              ..add(LoadSettings()),
+            create:
+                (context) =>
+                    SettingsBloc(repository: settingsRepository)
+                      ..add(LoadSettings()),
           ),
         ],
-        child: const App(),
+        child: MaterialApp.router(
+          title: 'AI Knowledge Assistant',
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: ThemeMode.light,
+          routerConfig: AppRouter.router,
+        ),
       ),
     );
   }
