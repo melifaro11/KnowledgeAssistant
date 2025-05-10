@@ -6,7 +6,7 @@ from app.indexing.loaders.file_loader import load_files
 from app.indexing.loaders.url_loader import load_urls
 from app.indexing.loaders.git_loader import load_git_repo
 
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 FAISS_ROOT = "storage/faiss_indexes"

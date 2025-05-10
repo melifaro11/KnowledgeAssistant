@@ -7,7 +7,7 @@ from app.auth.jwt import get_current_user
 from app.models.user import User
 from app.services import collection as collection_service, chat as chat_service
 from app.db.session import get_db
-from app.rag.retriever import ask_with_rag  # наша логика RAG
+from app.rag.retriever import ask_with_rag
 
 router = APIRouter(prefix="/collections/{collection_id}/chat", tags=["Chat"])
 
@@ -23,10 +23,8 @@ def ask_question(
     if not collection or collection.owner_id != current_user.id:
         raise HTTPException(status_code=404, detail="Collection not found")
 
-    # Выполняем RAG-процесс
     answer, sources = ask_with_rag(collection_id, chat_in.question)
 
-    # Сохраняем сообщение в БД
     message = chat_service.create_chat_message(
         db=db,
         collection_id=collection_id,

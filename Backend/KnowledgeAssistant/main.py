@@ -1,12 +1,12 @@
 import os
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 from app.db.session import init_db
 from app.api import auth, collections, sources, chat, settings
 
-os.environ["USER_AGENT"] = "KnowledgeAssistantBot/1.0"
 
 app = FastAPI()
 app.add_middleware(
@@ -16,6 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+load_dotenv()
+os.environ["USER_AGENT"] = "KnowledgeAssistantBot/1.0"
 
 init_db()
 

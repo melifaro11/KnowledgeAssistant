@@ -36,13 +36,7 @@ def add_source(
 
     source = source_service.create_source(db, collection_id, source_in)
 
-    source = source_service.reindex_source(db, source, collection_id)
-    print(f'Added source: {source}')
-    print(source.last_error)
-    print(source.collection_id)
-    print(source.name)
-
-    return source
+    return source_service.reindex_source(db, source, collection_id)
 
 
 @router.get("/{source_id}", response_model=SourceResponse)
@@ -79,7 +73,7 @@ def index_source(
 
     source = source_service.reindex_source(db, source, collection_id)
 
-    print(f'Indexed source: {source}')
+    print(f'IS_INDEXED: {source.is_indexed}')
 
     return source
 

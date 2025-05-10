@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import 'source.dart';
 
 class Collection {
@@ -30,9 +28,6 @@ class Collection {
   }
 
   factory Collection.fromJson(Map<String, dynamic> json) {
-    debugPrint(json['id']);
-    debugPrint(json['name']);
-    debugPrint(json['created_at']);
     return Collection(
       id: json['id'] as String,
       name: json['name'] as String,

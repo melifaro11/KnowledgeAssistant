@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/chat_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/chat_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/models/collection.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/models/collection.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/auth_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/auth_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -93,5 +96,8 @@
       <updated>1746662073375</updated>
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
   </component>
 </project>

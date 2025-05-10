@@ -1,8 +1,9 @@
 from app.config import MODEL_TYPE, EMBEDDING_MODEL
 
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai.chat_models import ChatOpenAI
 from langchain_community.llms import LlamaCpp
-from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings
+from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 def get_llm():

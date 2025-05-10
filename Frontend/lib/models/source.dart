@@ -1,4 +1,3 @@
-
 enum SourceType { file, git, url }
 
 class Source {
@@ -29,7 +28,7 @@ class Source {
       ),
       addedAt: DateTime.parse(json['added_at']),
       location: json['location'] as String?,
-      isIndexed: json['isIndexed'] as bool? ?? false,
+      isIndexed: json['is_indexed'] as bool? ?? false,
       lastError: json['last_error'] as String?,
     );
   }

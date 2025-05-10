@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
+
 import 'package:http/http.dart' as http;
 
 import '../models/user.dart';
@@ -24,8 +24,6 @@ class AuthRepository {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
-
-    debugPrint(response.statusCode.toString());
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

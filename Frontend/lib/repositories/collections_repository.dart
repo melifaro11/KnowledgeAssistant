@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:knowledge_assistant/models/source.dart';
 import 'package:knowledge_assistant/services/auth_token_storage.dart';
+
 import '../models/collection.dart';
 
 class CollectionsRepository {
@@ -86,18 +87,7 @@ class CollectionsRepository {
       throw Exception('Collection not found');
     }
 
-    final data = jsonDecode(response.body);
-
-    //return Collection.fromJson(data);
-    final collections = Collection.fromJson(data);
-    debugPrint('Collections: ');
-    debugPrint(collections.toString());
-    for (final s in collections.sources) {
-      debugPrint(s.name);
-      debugPrint(s.lastError);
-    }
-
-    return collections;
+    return Collection.fromJson(jsonDecode(response.body));
   }
 
   Future<Collection> addSourceToCollection(
@@ -124,8 +114,6 @@ class CollectionsRepository {
       throw Exception('Error adding source');
     }
 
-    //debugPrint(response.body);
-
     final collection = await getCollectionById(collectionId);
 
     return collection;
@@ -149,11 +137,7 @@ class CollectionsRepository {
       throw Exception('Source indexing error: ${response.body}');
     }
 
-    final data = jsonDecode(response.body);
-
-    debugPrint(data);
-
-    return Source.fromJson(data);
+    return Source.fromJson(jsonDecode(response.body));
   }
 
   Future<Collection> deleteSourceFromCollection(

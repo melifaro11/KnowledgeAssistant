@@ -22,7 +22,7 @@ class SourceResponse(BaseModel):
     type: SourceType
     added_at: datetime
     location: Optional[str] = None
-    isIndexed: bool = False
+    is_indexed: bool = False
     last_error: Optional[str] = None
 
     class Config:
