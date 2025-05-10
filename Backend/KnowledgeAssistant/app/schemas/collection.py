@@ -11,7 +11,7 @@ class CollectionCreate(BaseModel):
 class CollectionResponse(BaseModel):
     id: str
     name: str
-    createdAt: datetime
+    created_at: datetime
     sources: List[SourceResponse] = []
 
     class Config:
