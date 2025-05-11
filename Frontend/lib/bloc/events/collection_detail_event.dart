@@ -24,11 +24,13 @@ class AddGitSourceToCollection extends CollectionDetailEvent {
   final String collectionId;
   final String name;
   final String gitUrl;
+  final Map<String, dynamic> config;
 
   AddGitSourceToCollection({
     required this.collectionId,
     required this.name,
     required this.gitUrl,
+    this.config = const {},
   });
 }
 
@@ -36,16 +38,19 @@ class AddUrlSourceToCollection extends CollectionDetailEvent {
   final String collectionId;
   final String name;
   final String url;
+  final Map<String, dynamic> config;
 
   AddUrlSourceToCollection({
     required this.collectionId,
     required this.name,
     required this.url,
+    this.config = const {},
   });
 }
 
 class DeleteSourceFromCollection extends CollectionDetailEvent {
-  final String collectionId, sourceId;
+  final String collectionId;
+  final String sourceId;
 
   DeleteSourceFromCollection(this.collectionId, this.sourceId);
 }

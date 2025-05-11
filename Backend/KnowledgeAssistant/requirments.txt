@@ -14,5 +14,7 @@ openai
 tiktoken
 unstructured
 pdfminer.six
+pi_heif
 python-docx
 html5lib
+passlib

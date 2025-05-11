@@ -8,6 +8,7 @@ class Source {
   final String? location;
   final bool isIndexed;
   final String? lastError;
+  final Map<String, dynamic> config;
 
   Source({
     required this.id,
@@ -17,6 +18,7 @@ class Source {
     this.location,
     this.isIndexed = false,
     this.lastError,
+    this.config = const {},
   });
 
   factory Source.fromJson(Map<String, dynamic> json) {
@@ -25,11 +27,13 @@ class Source {
       name: json['name'] as String,
       type: SourceType.values.firstWhere(
         (e) => e.toString() == 'SourceType.${json['type']}',
+        orElse: () => SourceType.file,
       ),
-      addedAt: DateTime.parse(json['added_at']),
+      addedAt: DateTime.parse(json['added_at'] as String),
       location: json['location'] as String?,
       isIndexed: json['is_indexed'] as bool? ?? false,
       lastError: json['last_error'] as String?,
+      config: (json['config'] as Map<String, dynamic>?) ?? {},
     );
   }
 
@@ -40,7 +44,9 @@ class Source {
       'type': type.toString().split('.').last,
       'added_at': addedAt.toIso8601String(),
       'location': location,
-      'isIndexed': isIndexed,
+      'is_indexed': isIndexed,
+      'last_error': lastError,
+      'config': config,
     };
   }
 }

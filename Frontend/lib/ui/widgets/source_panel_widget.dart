@@ -29,7 +29,7 @@ class _SourcePanelState extends State<SourcePanel> {
     final messenger = ScaffoldMessenger.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.indigo.shade400.withAlpha(20),
@@ -71,6 +71,16 @@ class _SourcePanelState extends State<SourcePanel> {
                   const Icon(Icons.check_circle, color: Colors.green)
                 else
                   const Icon(Icons.hourglass_empty, color: Colors.grey),
+
+                if (widget.source.lastError != null)
+                  Text(
+                    widget.source.lastError ?? "",
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 const SizedBox(width: 8),
                 _isIndexing
                     ? const SizedBox(

@@ -28,6 +28,8 @@ class TextFieldDecorated extends StatefulWidget {
 
   final Function(String)? onChanged;
 
+  final TextInputType? keyboardType;
+
   const TextFieldDecorated({
     super.key,
     this.labelText,
@@ -43,6 +45,7 @@ class TextFieldDecorated extends StatefulWidget {
     this.suffixIcon,
     this.onSubmitted,
     this.onChanged,
+    this.keyboardType,
   });
 
   @override
@@ -61,6 +64,7 @@ class _TextFieldDecoratedState extends State<TextFieldDecorated> {
       child: TextField(
         controller: widget.controller,
         obscureText: widget.obscureText ?? false,
+        keyboardType: widget.keyboardType,
         enabled: widget.enabled ?? true,
         maxLines: widget.obscureText != null ? 1 : widget.maxLines,
         minLines: widget.obscureText != null ? 1 : widget.minLines,

@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, DateTime, Boolean, Enum, ForeignKey
+from sqlalchemy import Column, String, DateTime, Boolean, Enum, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import enum
@@ -20,6 +20,7 @@ class Source(Base):
     type = Column(Enum(SourceTypeEnum), nullable=False)
     added_at = Column(DateTime, default=datetime.utcnow)
     location = Column(String, nullable=True)
+    config = Column(JSON, nullable=True, default={})
     is_indexed = Column(Boolean, default=False)
     last_error = Column(String, nullable=True)
 

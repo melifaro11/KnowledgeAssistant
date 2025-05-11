@@ -119,11 +119,11 @@ class CollectionsRepository {
     return getCollectionById(collectionId);
   }
 
-  Future<Collection> addGitSource(
-    String collectionId,
-    String name,
-    String gitUrl,
-  ) async {
+  Future<Collection> addGitSource(String collectionId,
+      String name,
+      String gitUrl, {
+        Map<String, dynamic> config = const {},
+      }) async {
     final token = await tokenStorage.getToken();
     final response = await httpClient.post(
       Uri.parse('$baseUrl/collections/$collectionId/sources/git'),
@@ -131,7 +131,11 @@ class CollectionsRepository {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': name, 'location': gitUrl}),
+      body: jsonEncode({
+        'name': name,
+        'location': gitUrl,
+        'config': config,
+      }),
     );
     if (response.statusCode != 201) {
       throw Exception('Error adding git source: ${response.body}');
@@ -139,11 +143,11 @@ class CollectionsRepository {
     return getCollectionById(collectionId);
   }
 
-  Future<Collection> addUrlSource(
-    String collectionId,
-    String name,
-    String url,
-  ) async {
+  Future<Collection> addUrlSource(String collectionId,
+      String name,
+      String url, {
+        Map<String, dynamic> config = const {},
+      }) async {
     final token = await tokenStorage.getToken();
     final response = await httpClient.post(
       Uri.parse('$baseUrl/collections/$collectionId/sources/url'),
@@ -151,7 +155,11 @@ class CollectionsRepository {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': name, 'location': url}),
+      body: jsonEncode({
+        'name': name,
+        'location': url,
+        'config': config,
+      }),
     );
     if (response.statusCode != 201) {
       throw Exception('Error adding url source: ${response.body}');

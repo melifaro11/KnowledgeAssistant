@@ -20,7 +20,8 @@ class CollectionDetailBloc
 
   Future<void> _onLoadDetail(
     LoadCollectionDetail event,
-    Emitter<CollectionDetailState> emit,) async {
+    Emitter<CollectionDetailState> emit,
+  ) async {
     emit(CollectionDetailLoading());
     try {
       final collection = await repository.getCollectionById(event.id);
@@ -30,8 +31,10 @@ class CollectionDetailBloc
     }
   }
 
-  Future<void> _onAddFileSource(AddFileSourceToCollection event,
-      Emitter<CollectionDetailState> emit,) async {
+  Future<void> _onAddFileSource(
+    AddFileSourceToCollection event,
+    Emitter<CollectionDetailState> emit,
+  ) async {
     if (state is CollectionDetailLoaded) {
       try {
         final updated = await repository.addFileSource(
@@ -41,39 +44,45 @@ class CollectionDetailBloc
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding file: ${e}'));
+        emit(CollectionDetailError('Error adding file: $e'));
       }
     }
   }
 
-  Future<void> _onAddGitSource(AddGitSourceToCollection event,
-      Emitter<CollectionDetailState> emit,) async {
+  Future<void> _onAddGitSource(
+    AddGitSourceToCollection event,
+    Emitter<CollectionDetailState> emit,
+  ) async {
     if (state is CollectionDetailLoaded) {
       try {
         final updated = await repository.addGitSource(
           event.collectionId,
           event.name,
           event.gitUrl,
+          config: event.config,
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding git: ${e}'));
+        emit(CollectionDetailError('Error adding git: $e'));
       }
     }
   }
 
-  Future<void> _onAddUrlSource(AddUrlSourceToCollection event,
-      Emitter<CollectionDetailState> emit,) async {
+  Future<void> _onAddUrlSource(
+    AddUrlSourceToCollection event,
+    Emitter<CollectionDetailState> emit,
+  ) async {
     if (state is CollectionDetailLoaded) {
       try {
         final updated = await repository.addUrlSource(
           event.collectionId,
           event.name,
           event.url,
+          config: event.config,
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding url: ${e}'));
+        emit(CollectionDetailError('Error adding url: $e'));
       }
     }
   }

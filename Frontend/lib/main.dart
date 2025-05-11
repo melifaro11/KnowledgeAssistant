@@ -11,6 +11,7 @@ import 'package:knowledge_assistant/repositories/chat_repository.dart';
 import 'package:knowledge_assistant/repositories/collections_repository.dart';
 import 'package:knowledge_assistant/repositories/settings_repository.dart';
 import 'package:knowledge_assistant/routes.dart';
+import 'package:knowledge_assistant/theme.dart';
 
 final baseUri = "http://127.0.0.1:8000";
 
@@ -64,7 +65,8 @@ class KnowledgeAssistantApp extends StatelessWidget {
         ],
         child: MaterialApp.router(
           title: 'AI Knowledge Assistant',
-          theme: lightTheme,
+          //theme: lightTheme,
+          theme: knowledgeAITheme,
           darkTheme: darkTheme,
           themeMode: ThemeMode.light,
           routerConfig: AppRouter.router,

@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="" />
+    <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,8 +49,10 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant" />
-      <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant\app\db" />
+      <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant\app\tests" />
       <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant\app" />
+      <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant\app\indexing\loaders" />
+      <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant\app\indexing" />
     </key>
   </component>
   <component name="RunManager">

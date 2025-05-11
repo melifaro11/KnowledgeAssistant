@@ -32,7 +32,7 @@ class _CollectionPageState extends State<CollectionPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Collection')),
+      appBar: AppBar(title: const Text('Collection'), elevation: 10),
       body: BlocBuilder<CollectionDetailBloc, CollectionDetailState>(
         builder: (context, state) {
           if (state is CollectionDetailLoading) {
@@ -68,7 +68,7 @@ class _CollectionPageState extends State<CollectionPage>
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        vertical: 16,
+                        vertical: 8,
                         horizontal: 50,
                       ),
                       child: Column(
@@ -94,19 +94,28 @@ class _CollectionPageState extends State<CollectionPage>
                           AnimatedSize(
                             duration: const Duration(milliseconds: 600),
                             curve: Curves.easeInOut,
-                            child: InlineSourcePanel(
-                              collectionId: widget.collectionId,
-                              onDone: () {
-                                setState(() {
-                                  _showInlinePanel = false;
-                                });
-                              },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 10,
+                              ),
+                              child: InlineSourcePanel(
+                                collectionId: widget.collectionId,
+                                onDone: () {
+                                  setState(() {
+                                    _showInlinePanel = false;
+                                  });
+                                },
+                              ),
                             ),
                           ),
-                        SizedBox(height: 16),
+                        //SizedBox(height: 16),
                         ElevatedIconButton(
                           width: 150,
-                          icon: const Icon(Icons.add),
+                          icon:
+                              _showInlinePanel
+                                  ? const Icon(Icons.arrow_downward)
+                                  : const Icon(Icons.add),
                           onPressed:
                               () => setState(() {
                                 _showInlinePanel = !_showInlinePanel;
