@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:knowledge_assistant/bloc/collection_detail_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/collection_detail_event.dart';
 import 'package:knowledge_assistant/bloc/states/collection_detail_state.dart';
+import 'package:knowledge_assistant/ui/widgets/combobox_widget.dart';
 import 'package:knowledge_assistant/ui/widgets/elevated_icon_button.dart';
 import 'package:knowledge_assistant/ui/widgets/source_panel_widget.dart';
+import 'package:knowledge_assistant/ui/widgets/textfield_decorated.dart';
 
 class CollectionPage extends StatefulWidget {
   final String collectionId;
@@ -16,7 +18,10 @@ class CollectionPage extends StatefulWidget {
   State<CollectionPage> createState() => _CollectionPageState();
 }
 
-class _CollectionPageState extends State<CollectionPage> {
+class _CollectionPageState extends State<CollectionPage>
+    with SingleTickerProviderStateMixin {
+  bool _showInlinePanel = false;
+
   @override
   void initState() {
     super.initState();
@@ -25,66 +30,10 @@ class _CollectionPageState extends State<CollectionPage> {
     );
   }
 
-  void _addSourceDialog() {
-    final nameController = TextEditingController();
-    final locationController = TextEditingController();
-    String type = 'file';
-
-    showDialog(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            title: const Text('Add source'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                ),
-                DropdownButton<String>(
-                  value: type,
-                  items: const [
-                    DropdownMenuItem(value: 'file', child: Text('File')),
-                    DropdownMenuItem(value: 'git', child: Text('Git')),
-                    DropdownMenuItem(value: 'url', child: Text('URL')),
-                  ],
-                  onChanged: (val) => setState(() => type = val!),
-                ),
-                TextField(
-                  controller: locationController,
-                  decoration: const InputDecoration(labelText: 'Path / URL'),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  context.read<CollectionDetailBloc>().add(
-                    AddSourceToCollection(
-                      collectionId: widget.collectionId,
-                      name: nameController.text,
-                      type: type,
-                      location: locationController.text,
-                    ),
-                  );
-                },
-                child: const Text('Add'),
-              ),
-            ],
-          ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Collection')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addSourceDialog,
-        child: const Icon(Icons.add),
-      ),
       body: BlocBuilder<CollectionDetailBloc, CollectionDetailState>(
         builder: (context, state) {
           if (state is CollectionDetailLoading) {
@@ -96,11 +45,23 @@ class _CollectionPageState extends State<CollectionPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
                     collection.name,
                     style: Theme.of(context).textTheme.headlineSmall,
                     textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: ElevatedIconButton(
+                    width: 180,
+                    icon: const Icon(Icons.question_mark),
+                    child: const Text('Request'),
+                    onPressed:
+                        () => GoRouter.of(
+                          context,
+                        ).push('/chat/${widget.collectionId}'),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -127,15 +88,29 @@ class _CollectionPageState extends State<CollectionPage> {
                 const SizedBox(height: 8),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 25),
-                    child: ElevatedIconButton(
-                      width: 250,
-                      icon: const Icon(Icons.search),
-                      child: const Text('Search in collection'),
-                      onPressed:
-                          () => GoRouter.of(
-                            context,
-                          ).push('/chat/${widget.collectionId}'),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Column(
+                      children: [
+                        if (_showInlinePanel)
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.easeInOut,
+                            child: _InlineSourcePanel(
+                              collectionId: widget.collectionId,
+                            ),
+                          ),
+                        SizedBox(height: 16),
+                        ElevatedIconButton(
+                          width: 150,
+                          icon: const Icon(Icons.add),
+                          onPressed:
+                              () => setState(() {
+                                _showInlinePanel = !_showInlinePanel;
+                              }),
+                          child: const Text("Add source"),
+                        ),
+                        SizedBox(height: 16),
+                      ],
                     ),
                   ),
                 ),
@@ -149,5 +124,103 @@ class _CollectionPageState extends State<CollectionPage> {
         },
       ),
     );
+  }
+}
+
+class _InlineSourcePanel extends StatefulWidget {
+  final String collectionId;
+
+  const _InlineSourcePanel({required this.collectionId});
+
+  @override
+  State<_InlineSourcePanel> createState() => _InlineSourcePanelState();
+}
+
+class _InlineSourcePanelState extends State<_InlineSourcePanel> {
+  final _nameController = TextEditingController();
+  final _locationController = TextEditingController();
+  String _type = 'file';
+  bool _isSubmitting = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 70),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.indigo.shade400.withAlpha(80)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Add source', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 12),
+          TextFieldDecorated(
+            controller: _nameController,
+            labelText: "Name",
+            hintText: "Source name",
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              ComboBox<String>(
+                value: _type,
+                showSearch: false,
+                width: 150,
+                items: [
+                  DropdownMenuItem(value: 'file', child: Text('File')),
+                  DropdownMenuItem(value: 'git', child: Text('Git')),
+                  DropdownMenuItem(value: 'url', child: Text('URL')),
+                ],
+                onChanged: (val) => setState(() => _type = val!),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextFieldDecorated(
+                  controller: _locationController,
+                  labelText: "Path/URL",
+                  hintText: "Source path or URL",
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _isSubmitting
+              ? const Center(child: CircularProgressIndicator())
+              : Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  onPressed: _onSubmit,
+                  icon: const Icon(Icons.add),
+                  label: const Text("Index"),
+                ),
+              ),
+        ],
+      ),
+    );
+  }
+
+  void _onSubmit() {
+    setState(() => _isSubmitting = true);
+
+    context.read<CollectionDetailBloc>().add(
+      AddSourceToCollection(
+        collectionId: widget.collectionId,
+        name: _nameController.text.trim(),
+        type: _type,
+        location: _locationController.text.trim(),
+      ),
+    );
+
+    Future.delayed(const Duration(milliseconds: 200)).then((_) {
+      if (!mounted) return;
+      setState(() {
+        _nameController.clear();
+        _locationController.clear();
+        _type = 'file';
+        _isSubmitting = false;
+      });
+    });
   }
 }

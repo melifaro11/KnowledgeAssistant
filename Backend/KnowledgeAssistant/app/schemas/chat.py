@@ -11,7 +11,6 @@ class ChatSource(BaseModel):
 
 class ChatMessageUpdate(BaseModel):
     question: str
-    answer: str
 
 
 class ChatMessageCreate(BaseModel):

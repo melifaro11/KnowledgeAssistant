@@ -41,7 +41,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Search in collection')),
+      appBar: AppBar(title: const Text('Requests'), elevation: 10),
       body: Column(
         children: [
           Expanded(
@@ -93,34 +93,40 @@ class _ChatPageState extends State<ChatPage> {
 
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-            child: TextFieldDecorated(
-              controller: _controller,
-              minLines: 1,
-              maxLines: 2,
-              suffix: IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  final question = _controller.text.trim();
-                  if (question.isEmpty) return;
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFieldDecorated(
+                    controller: _controller,
+                    labelText: "Request",
+                    hintText: "Your request...",
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    final question = _controller.text.trim();
+                    if (question.isEmpty) return;
 
-                  setState(() {
-                    _isSending = true;
-                  });
+                    setState(() {
+                      _isSending = true;
+                    });
 
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _scrollToEnd();
-                  });
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollToEnd();
+                    });
 
-                  context.read<ChatBloc>().add(
-                    SendMessage(
-                      collectionId: widget.collectionId,
-                      question: question,
-                    ),
-                  );
+                    context.read<ChatBloc>().add(
+                      SendMessage(
+                        collectionId: widget.collectionId,
+                        question: question,
+                      ),
+                    );
 
-                  _controller.clear();
-                },
-              ),
+                    _controller.clear();
+                  },
+                ),
+              ],
             ),
           ),
         ],

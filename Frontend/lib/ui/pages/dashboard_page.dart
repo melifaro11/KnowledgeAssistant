@@ -38,17 +38,41 @@ class DashboardPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final collection = state.collections[index];
                   return ListTile(
-                    title: Text(collection.name),
+                    title: Container(
+                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.indigo.withAlpha(50)),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            "assets/images/collection.png",
+                            height: 32,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            collection.name,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            '(${collection.sources.length.toString()} sources)',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
                     trailing: SizedBox(
                       width: 80,
                       child: Row(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              context.push('/collection/${collection.id}');
-                            },
-                          ),
+                          // IconButton(
+                          //   icon: const Icon(Icons.edit),
+                          //   onPressed: () {
+                          //     context.push('/collection/${collection.id}');
+                          //   },
+                          // ),
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () async {
@@ -87,9 +111,7 @@ class DashboardPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    onTap:
-                        () =>
-                            GoRouter.of(context).push('/chat/${collection.id}'),
+                    onTap: () => context.push('/collection/${collection.id}'),
                   );
                 },
               ),

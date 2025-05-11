@@ -39,6 +39,13 @@ class _SourcePanelState extends State<SourcePanel> {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
+            if (widget.source.type.name == 'url')
+              Image.asset("assets/images/source_url.png", height: 42),
+            if (widget.source.type.name == 'file')
+              Image.asset("assets/images/source_file.png", height: 42),
+            if (widget.source.type.name == 'git')
+              Image.asset("assets/images/source_git.png", height: 42),
+            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +56,7 @@ class _SourcePanelState extends State<SourcePanel> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${widget.source.type.name} | ${widget.source.location ?? "—"}',
+                    widget.source.location ?? "—",
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],

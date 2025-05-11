@@ -4,6 +4,7 @@ import datetime
 
 from sqlalchemy.orm import Session
 from app.models.chat import ChatMessage
+from app.rag.retriever import ask_with_rag
 
 
 def get_chat_history(db: Session, collection_id: str):
@@ -51,7 +52,6 @@ def update_chat_message(
         collection_id: str,
         message_id: str,
         question: str,
-        answer: str,
 ):
     message = db.query(ChatMessage).filter(
         ChatMessage.id == message_id,
@@ -59,8 +59,10 @@ def update_chat_message(
     ).first()
 
     if message:
+        answer, sources = ask_with_rag(collection_id, question)
         message.question = question
         message.answer = answer
+        message.sources = [s.dict() for s in sources]
         db.commit()
         db.refresh(message)
 
