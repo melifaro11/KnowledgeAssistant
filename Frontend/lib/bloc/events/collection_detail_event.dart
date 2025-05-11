@@ -1,3 +1,5 @@
+import 'package:file_picker/file_picker.dart';
+
 abstract class CollectionDetailEvent {}
 
 class LoadCollectionDetail extends CollectionDetailEvent {
@@ -6,15 +8,39 @@ class LoadCollectionDetail extends CollectionDetailEvent {
   LoadCollectionDetail(this.id);
 }
 
-class AddSourceToCollection extends CollectionDetailEvent {
-  final String collectionId, name, type;
-  final String? location;
+class AddFileSourceToCollection extends CollectionDetailEvent {
+  final String collectionId;
+  final String name;
+  final PlatformFile file;
 
-  AddSourceToCollection({
+  AddFileSourceToCollection({
     required this.collectionId,
     required this.name,
-    required this.type,
-    this.location,
+    required this.file,
+  });
+}
+
+class AddGitSourceToCollection extends CollectionDetailEvent {
+  final String collectionId;
+  final String name;
+  final String gitUrl;
+
+  AddGitSourceToCollection({
+    required this.collectionId,
+    required this.name,
+    required this.gitUrl,
+  });
+}
+
+class AddUrlSourceToCollection extends CollectionDetailEvent {
+  final String collectionId;
+  final String name;
+  final String url;
+
+  AddUrlSourceToCollection({
+    required this.collectionId,
+    required this.name,
+    required this.url,
   });
 }
 

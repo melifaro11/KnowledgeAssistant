@@ -11,15 +11,16 @@ class CollectionDetailBloc
   CollectionDetailBloc({required this.repository})
     : super(CollectionDetailInitial()) {
     on<LoadCollectionDetail>(_onLoadDetail);
-    on<AddSourceToCollection>(_onAddSource);
+    on<AddFileSourceToCollection>(_onAddFileSource);
+    on<AddGitSourceToCollection>(_onAddGitSource);
+    on<AddUrlSourceToCollection>(_onAddUrlSource);
     on<DeleteSourceFromCollection>(_onDeleteSource);
     on<UpdateSourceInCollection>(_onUpdateSource);
   }
 
   Future<void> _onLoadDetail(
     LoadCollectionDetail event,
-    Emitter<CollectionDetailState> emit,
-  ) async {
+    Emitter<CollectionDetailState> emit,) async {
     emit(CollectionDetailLoading());
     try {
       final collection = await repository.getCollectionById(event.id);
@@ -29,21 +30,50 @@ class CollectionDetailBloc
     }
   }
 
-  Future<void> _onAddSource(
-    AddSourceToCollection event,
-    Emitter<CollectionDetailState> emit,
-  ) async {
+  Future<void> _onAddFileSource(AddFileSourceToCollection event,
+      Emitter<CollectionDetailState> emit,) async {
     if (state is CollectionDetailLoaded) {
       try {
-        final updated = await repository.addSourceToCollection(
+        final updated = await repository.addFileSource(
           event.collectionId,
           event.name,
-          event.type,
-          event.location,
+          event.file,
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding source: ${e.toString()}'));
+        emit(CollectionDetailError('Error adding file: ${e}'));
+      }
+    }
+  }
+
+  Future<void> _onAddGitSource(AddGitSourceToCollection event,
+      Emitter<CollectionDetailState> emit,) async {
+    if (state is CollectionDetailLoaded) {
+      try {
+        final updated = await repository.addGitSource(
+          event.collectionId,
+          event.name,
+          event.gitUrl,
+        );
+        emit(CollectionDetailLoaded(updated));
+      } catch (e) {
+        emit(CollectionDetailError('Error adding git: ${e}'));
+      }
+    }
+  }
+
+  Future<void> _onAddUrlSource(AddUrlSourceToCollection event,
+      Emitter<CollectionDetailState> emit,) async {
+    if (state is CollectionDetailLoaded) {
+      try {
+        final updated = await repository.addUrlSource(
+          event.collectionId,
+          event.name,
+          event.url,
+        );
+        emit(CollectionDetailLoaded(updated));
+      } catch (e) {
+        emit(CollectionDetailError('Error adding url: ${e}'));
       }
     }
   }

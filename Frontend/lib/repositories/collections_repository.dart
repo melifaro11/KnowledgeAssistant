@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledge_assistant/models/source.dart';
 import 'package:knowledge_assistant/services/auth_token_storage.dart';
@@ -90,33 +91,72 @@ class CollectionsRepository {
     return Collection.fromJson(jsonDecode(response.body));
   }
 
-  Future<Collection> addSourceToCollection(
+  Future<Collection> addFileSource(
     String collectionId,
     String name,
-    String type,
-    String? location,
+    PlatformFile file,
   ) async {
     final token = await tokenStorage.getToken();
-    if (token == null) {
-      throw Exception('User is not authenticated');
+    final uri = Uri.parse('$baseUrl/collections/$collectionId/sources/file');
+    final request =
+        http.MultipartRequest('POST', uri)
+          ..headers['Authorization'] = 'Bearer $token'
+          ..fields['name'] = name
+          ..files.add(
+            http.MultipartFile.fromBytes(
+              'file',
+              file.bytes!,
+              filename: file.name,
+            ),
+          );
+    final streamed = await request.send();
+    if (streamed.statusCode != 201) {
+      throw Exception(
+        'Error adding file source: ${await streamed.stream.bytesToString()}',
+      );
     }
 
+    return getCollectionById(collectionId);
+  }
+
+  Future<Collection> addGitSource(
+    String collectionId,
+    String name,
+    String gitUrl,
+  ) async {
+    final token = await tokenStorage.getToken();
     final response = await httpClient.post(
-      Uri.parse('$baseUrl/collections/$collectionId/sources'),
+      Uri.parse('$baseUrl/collections/$collectionId/sources/git'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': name, 'type': type, 'location': location}),
+      body: jsonEncode({'name': name, 'location': gitUrl}),
     );
-
     if (response.statusCode != 201) {
-      throw Exception('Error adding source');
+      throw Exception('Error adding git source: ${response.body}');
     }
+    return getCollectionById(collectionId);
+  }
 
-    final collection = await getCollectionById(collectionId);
-
-    return collection;
+  Future<Collection> addUrlSource(
+    String collectionId,
+    String name,
+    String url,
+  ) async {
+    final token = await tokenStorage.getToken();
+    final response = await httpClient.post(
+      Uri.parse('$baseUrl/collections/$collectionId/sources/url'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'name': name, 'location': url}),
+    );
+    if (response.statusCode != 201) {
+      throw Exception('Error adding url source: ${response.body}');
+    }
+    return getCollectionById(collectionId);
   }
 
   Future<Source> reindexSource(String collectionId, String sourceId) async {
