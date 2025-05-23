@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from sqlalchemy.orm import Session
 from typing import List
 
+from app.tasks import index_source_task
 from app.schemas.source import SourceCreate, SourceResponse, SourceType
 from app.services import source as source_service, collection as collection_service
 from app.auth.jwt import get_current_user
@@ -47,6 +48,25 @@ def get_source(
     return source
 
 
+@router.get("/{source_id}/status")
+def get_source_status(
+    collection_id: str,
+    source_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    _verify_collection(db, collection_id, current_user)
+    source = source_service.get_source(db, source_id)
+    if not source:
+        raise HTTPException(404, "Source not found")
+
+    return {
+        "status": source.status,
+        "progress": source.progress,
+        "message": source.progress_message,
+    }
+
+
 @router.post("/file", response_model=SourceResponse, status_code=201)
 async def add_file_source(
         collection_id: str,
@@ -70,7 +90,7 @@ async def add_file_source(
     source_create = SourceCreate(name=name, type=SourceType.file, location=file_path)
     source = source_service.create_source(db, collection_id, source_create)
 
-    return source_service.reindex_source(db, source, collection_id)
+    return source
 
 
 @router.post("/git", response_model=SourceResponse, status_code=201)
@@ -89,7 +109,8 @@ def add_git_source(
 
     source_create = SourceCreate(name=name, type=SourceType.git, location=location)
     source = source_service.create_source(db, collection_id, source_create)
-    return source_service.reindex_source(db, source, collection_id)
+
+    return source
 
 
 @router.post("/url", response_model=SourceResponse, status_code=201)
@@ -109,7 +130,7 @@ def add_url_source(
     source_create = SourceCreate(name=name, type=SourceType.url, location=location)
     source = source_service.create_source(db, collection_id, source_create)
 
-    return source_service.reindex_source(db, source, collection_id)
+    return source
 
 
 @router.post("/{source_id}/index", response_model=SourceResponse)
@@ -125,7 +146,12 @@ def index_source(
     if not source or source.collection_id != collection_id:
         raise HTTPException(status_code=404, detail="Source not found")
 
-    return source_service.reindex_source(db, source, collection_id)
+    source.status = "pending"
+    db.commit()
+
+    index_source_task.send(collection_id, source_id)
+
+    return source
 
 
 @router.delete("/{source_id}", status_code=status.HTTP_204_NO_CONTENT)

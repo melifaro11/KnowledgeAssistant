@@ -61,3 +61,10 @@ class UpdateSourceInCollection extends CollectionDetailEvent {
 
   UpdateSourceInCollection(this.collectionId, this.updatedSource);
 }
+
+class FetchSourceStatus extends CollectionDetailEvent {
+  final String collectionId;
+  final String sourceId;
+
+  FetchSourceStatus(this.collectionId, this.sourceId);
+}

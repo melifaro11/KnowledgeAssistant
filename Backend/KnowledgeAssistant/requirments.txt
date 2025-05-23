@@ -18,3 +18,5 @@ pi_heif
 python-docx
 html5lib
 passlib
+dramatiq
+redis

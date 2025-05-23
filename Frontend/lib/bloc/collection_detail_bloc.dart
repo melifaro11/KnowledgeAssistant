@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/collection_detail_event.dart';
 import 'package:knowledge_assistant/bloc/states/collection_detail_state.dart';
@@ -7,6 +8,7 @@ import 'package:knowledge_assistant/repositories/collections_repository.dart';
 class CollectionDetailBloc
     extends Bloc<CollectionDetailEvent, CollectionDetailState> {
   final CollectionsRepository repository;
+  Timer? _pollingTimer;
 
   CollectionDetailBloc({required this.repository})
     : super(CollectionDetailInitial()) {
@@ -16,6 +18,7 @@ class CollectionDetailBloc
     on<AddUrlSourceToCollection>(_onAddUrlSource);
     on<DeleteSourceFromCollection>(_onDeleteSource);
     on<UpdateSourceInCollection>(_onUpdateSource);
+    on<FetchSourceStatus>(_onFetchSourceStatus);
   }
 
   Future<void> _onLoadDetail(
@@ -26,8 +29,56 @@ class CollectionDetailBloc
     try {
       final collection = await repository.getCollectionById(event.id);
       emit(CollectionDetailLoaded(collection));
+      _startPolling(CollectionDetailLoaded(collection));
     } catch (e) {
-      emit(CollectionDetailError('Error loading collection: ${e.toString()}'));
+      emit(CollectionDetailError('Error loading collection: \${e.toString()}'));
+    }
+  }
+
+  void _startPolling(CollectionDetailLoaded state) {
+    _pollingTimer?.cancel();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      for (final s in state.collection.sources) {
+        if (s.status == 'pending' || s.status == 'running') {
+          add(FetchSourceStatus(state.collection.id, s.id));
+        }
+      }
+    });
+  }
+
+  Future<void> _onFetchSourceStatus(
+    FetchSourceStatus event,
+    Emitter<CollectionDetailState> emit,
+  ) async {
+    if (state is CollectionDetailLoaded) {
+      try {
+        final status = await repository.fetchSourceStatus(
+          event.collectionId,
+          event.sourceId,
+        );
+        final currentState = state as CollectionDetailLoaded;
+        final updatedSources =
+            currentState.collection.sources.map((s) {
+              if (s.id == status.sourceId) {
+                return s.copyWith(
+                  status: status.status,
+                  progress: status.progress,
+                  lastError: status.status == 'failed' ? s.lastError : null,
+                );
+              }
+              return s;
+            }).toList();
+        final updatedCollection = currentState.collection.copyWith(
+          sources: updatedSources,
+        );
+        emit(CollectionDetailLoaded(updatedCollection));
+
+        if (updatedSources.every((s) => s.status == 'indexed')) {
+          _pollingTimer?.cancel();
+        }
+      } catch (_) {
+        // ignore
+      }
     }
   }
 
@@ -44,7 +95,7 @@ class CollectionDetailBloc
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding file: $e'));
+        emit(CollectionDetailError('Error adding file: \$e'));
       }
     }
   }
@@ -63,7 +114,7 @@ class CollectionDetailBloc
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding git: $e'));
+        emit(CollectionDetailError('Error adding git: \$e'));
       }
     }
   }
@@ -82,7 +133,7 @@ class CollectionDetailBloc
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error adding url: $e'));
+        emit(CollectionDetailError('Error adding url: \$e'));
       }
     }
   }
@@ -99,7 +150,7 @@ class CollectionDetailBloc
         );
         emit(CollectionDetailLoaded(updated));
       } catch (e) {
-        emit(CollectionDetailError('Error deleting source: ${e.toString()}'));
+        emit(CollectionDetailError('Error deleting source: \${e.toString()}'));
       }
     }
   }
@@ -122,5 +173,11 @@ class CollectionDetailBloc
               as List<Source>;
       emit(CollectionDetailLoaded(current.copyWith(sources: updatedSources)));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _pollingTimer?.cancel();
+    return super.close();
   }
 }

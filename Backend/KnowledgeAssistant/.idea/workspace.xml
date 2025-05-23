@@ -5,11 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/pages/collection_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/models/source_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/collection_detail_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/collection_detail_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collection_detail_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collection_detail_event.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,14 +39,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/alm14dt5/Desktop/AKTUELLES/KnowledgeAssistant/Backend/KnowledgeAssistant/run.py"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant" />
@@ -56,22 +58,21 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="run" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="KnowledgeAssistant" />
-      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="USER_AGENT" value="KnowledgeAssistantBot/1.0" />
       </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.13 (KnowledgeAssistant)" />
+      <option name="SDK_HOME" value="C:\Users\alm14dt5\Desktop\AKTUELLES\KnowledgeAssistant\Backend\KnowledgeAssistant\.venv\Scripts\python.exe" />
+      <option name="SDK_NAME" value="Python 3.10 (Backend)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\Alexandr\Desktop\KnowledgeAssistant\Backend\KnowledgeAssistant\main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />

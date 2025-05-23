@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:knowledge_assistant/models/source.dart';
+import 'package:knowledge_assistant/models/source_state.dart';
 import 'package:knowledge_assistant/services/auth_token_storage.dart';
 
 import '../models/collection.dart';
@@ -119,11 +120,12 @@ class CollectionsRepository {
     return getCollectionById(collectionId);
   }
 
-  Future<Collection> addGitSource(String collectionId,
-      String name,
-      String gitUrl, {
-        Map<String, dynamic> config = const {},
-      }) async {
+  Future<Collection> addGitSource(
+    String collectionId,
+    String name,
+    String gitUrl, {
+    Map<String, dynamic> config = const {},
+  }) async {
     final token = await tokenStorage.getToken();
     final response = await httpClient.post(
       Uri.parse('$baseUrl/collections/$collectionId/sources/git'),
@@ -131,11 +133,7 @@ class CollectionsRepository {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        'name': name,
-        'location': gitUrl,
-        'config': config,
-      }),
+      body: jsonEncode({'name': name, 'location': gitUrl, 'config': config}),
     );
     if (response.statusCode != 201) {
       throw Exception('Error adding git source: ${response.body}');
@@ -143,11 +141,12 @@ class CollectionsRepository {
     return getCollectionById(collectionId);
   }
 
-  Future<Collection> addUrlSource(String collectionId,
-      String name,
-      String url, {
-        Map<String, dynamic> config = const {},
-      }) async {
+  Future<Collection> addUrlSource(
+    String collectionId,
+    String name,
+    String url, {
+    Map<String, dynamic> config = const {},
+  }) async {
     final token = await tokenStorage.getToken();
     final response = await httpClient.post(
       Uri.parse('$baseUrl/collections/$collectionId/sources/url'),
@@ -155,11 +154,7 @@ class CollectionsRepository {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        'name': name,
-        'location': url,
-        'config': config,
-      }),
+      body: jsonEncode({'name': name, 'location': url, 'config': config}),
     );
     if (response.statusCode != 201) {
       throw Exception('Error adding url source: ${response.body}');
@@ -207,5 +202,22 @@ class CollectionsRepository {
     }
 
     return await getCollectionById(collectionId);
+  }
+
+  Future<SourceStatus> fetchSourceStatus(
+    String collectionId,
+    String sourceId,
+  ) async {
+    final token = await tokenStorage.getToken();
+    final resp = await httpClient.get(
+      Uri.parse('$baseUrl/collections/$collectionId/sources/$sourceId/status'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (resp.statusCode != 200) {
+      throw Exception('Cannot fetch source status: ${resp.body}');
+    }
+    final json = jsonDecode(resp.body) as Map<String, dynamic>;
+
+    return SourceStatus.fromJson(json, sourceId);
   }
 }

@@ -9,6 +9,8 @@ class Source {
   final bool isIndexed;
   final String? lastError;
   final Map<String, dynamic> config;
+  final String? status;
+  final int? progress;
 
   Source({
     required this.id,
@@ -19,6 +21,8 @@ class Source {
     this.isIndexed = false,
     this.lastError,
     this.config = const {},
+    this.status,
+    this.progress,
   });
 
   factory Source.fromJson(Map<String, dynamic> json) {
@@ -48,5 +52,31 @@ class Source {
       'last_error': lastError,
       'config': config,
     };
+  }
+
+  Source copyWith({
+    String? id,
+    String? name,
+    SourceType? type,
+    DateTime? addedAt,
+    String? location,
+    bool? isIndexed,
+    String? lastError,
+    Map<String, dynamic>? config,
+    String? status,
+    int? progress,
+  }) {
+    return Source(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      addedAt: addedAt ?? this.addedAt,
+      location: location ?? this.location,
+      isIndexed: isIndexed ?? this.isIndexed,
+      lastError: lastError ?? this.lastError,
+      config: config ?? this.config,
+      status: status ?? this.status,
+      progress: progress ?? this.progress,
+    );
   }
 }
