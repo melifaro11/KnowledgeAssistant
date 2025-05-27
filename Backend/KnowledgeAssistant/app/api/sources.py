@@ -39,12 +39,13 @@ def get_source(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user),
 ):
+    print('TTTTTTTTTTTTTTT')
     _verify_collection(db, collection_id, current_user)
 
     source = source_service.get_source(db, source_id)
     if not source or source.collection_id != collection_id:
         raise HTTPException(status_code=404, detail="Source not found")
-
+    print('FFFFFF')
     return source
 
 
@@ -55,10 +56,13 @@ def get_source_status(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    print('STATUS REQUESST')
     _verify_collection(db, collection_id, current_user)
     source = source_service.get_source(db, source_id)
     if not source:
         raise HTTPException(404, "Source not found")
+
+    print(f'RESULT: status: {source.status} progress: {source.progress}')
 
     return {
         "status": source.status,
@@ -75,6 +79,7 @@ async def add_file_source(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user),
 ):
+    print('FILEEEEEEEEEE')
     _verify_collection(db, collection_id, current_user)
 
     upload_dir = os.path.join("storage", "uploads", collection_id)
@@ -89,6 +94,11 @@ async def add_file_source(
 
     source_create = SourceCreate(name=name, type=SourceType.file, location=file_path)
     source = source_service.create_source(db, collection_id, source_create)
+
+    source.status = "pending"
+    db.commit()
+
+    index_source_task.send(collection_id, source.id)
 
     return source
 
@@ -110,6 +120,11 @@ def add_git_source(
     source_create = SourceCreate(name=name, type=SourceType.git, location=location)
     source = source_service.create_source(db, collection_id, source_create)
 
+    source.status = "pending"
+    db.commit()
+
+    index_source_task.send(collection_id, source.id)
+
     return source
 
 
@@ -130,6 +145,11 @@ def add_url_source(
     source_create = SourceCreate(name=name, type=SourceType.url, location=location)
     source = source_service.create_source(db, collection_id, source_create)
 
+    source.status = "pending"
+    db.commit()
+
+    index_source_task.send(collection_id, source.id)
+
     return source
 
 
@@ -140,6 +160,7 @@ def index_source(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user),
 ):
+    print('AAAAAAAAAAAAAA')
     _verify_collection(db, collection_id, current_user)
 
     source = source_service.get_source(db, source_id)
@@ -150,6 +171,8 @@ def index_source(
     db.commit()
 
     index_source_task.send(collection_id, source_id)
+
+    print(f'SOURCE: {source}')
 
     return source
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowledge_assistant/bloc/events/collection_detail_event.dart';
 import 'package:knowledge_assistant/bloc/states/collection_detail_state.dart';
@@ -29,6 +30,11 @@ class CollectionDetailBloc
     try {
       final collection = await repository.getCollectionById(event.id);
       emit(CollectionDetailLoaded(collection));
+      debugPrint('Start pooling');
+      debugPrint('Collection: $collection');
+      for (final s in collection.sources) {
+        debugPrint('${s.id} ${s.name} ${s.status} ${s.progress} ${s.isIndexed} ${s.lastError}');
+      }
       _startPolling(CollectionDetailLoaded(collection));
     } catch (e) {
       emit(CollectionDetailError('Error loading collection: \${e.toString()}'));
@@ -38,7 +44,9 @@ class CollectionDetailBloc
   void _startPolling(CollectionDetailLoaded state) {
     _pollingTimer?.cancel();
     _pollingTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      debugPrint('UPDATE STATUS');
       for (final s in state.collection.sources) {
+        debugPrint('SOURCE: ${s.name} ${s.status} ${s.progress}');
         if (s.status == 'pending' || s.status == 'running') {
           add(FetchSourceStatus(state.collection.id, s.id));
         }

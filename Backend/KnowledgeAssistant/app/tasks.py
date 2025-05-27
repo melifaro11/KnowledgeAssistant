@@ -22,13 +22,21 @@ def index_source_task(collection_id: str, source_id: str):
     Background task: indexing giving source into collection.
     Reporting status and progress in database.
     """
+    print('index_source_task_started')
     db = next(get_db())
+    src: Source = db.query(Source).get(source_id)
+
+    print(f'Loaded source: {src}')
+    if src in None:
+        return
+
     try:
-        src: Source = db.query(Source).get(source_id)
         src.status = "running"
         src.progress = 0
         src.progress_message = "Starting indexing"
         db.commit()
+
+        print('EEEEEEEE')
 
         index_source(
             collection_id=collection_id,
@@ -44,6 +52,7 @@ def index_source_task(collection_id: str, source_id: str):
         src.last_error = None
         db.commit()
     except Exception as e:
+        print(f'INDEX EXCEPTION: {e}')
         src.status = "failed"
         src.last_error = f"{e}\\n{traceback.format_exc()}"
         db.commit()

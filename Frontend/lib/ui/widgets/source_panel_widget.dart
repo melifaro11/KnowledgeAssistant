@@ -65,8 +65,15 @@ class _SourcePanelState extends State<SourcePanel> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (widget.source.progress != null)
+                  SizedBox(
+                    width: 100,
+                    child: LinearProgressIndicator(
+                      value: widget.source.progress! / 100,
+                    ),
+                  ),
                 if (widget.source.lastError != null)
-                  const Icon(Icons.error, color: Colors.red)
+                  Icon(Icons.error, color: Theme.of(context).colorScheme.error)
                 else if (widget.source.isIndexed)
                   const Icon(Icons.check_circle, color: Colors.green)
                 else

@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="71181251-adda-4e67-b834-1b1745cf2f42" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../Frontend/lib/models/source_state.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/collection_detail_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/collection_detail_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collection_detail_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/bloc/events/collection_detail_event.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/models/source.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/repositories/collections_repository.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Frontend/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/lib/ui/widgets/source_panel_widget.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
